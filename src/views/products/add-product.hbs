@@ -1,6 +1,6 @@
 <div class="mainDiv">
     <div class="cardStyle">
-        <form action="/users/add-product" method="post">
+        <form style="position: relative;" action="/users/add-product" method="post">
 
             <img src="/img/logo.jpeg" id="signupLogo" />
             <h2 class="formTitle">
@@ -38,11 +38,11 @@
                 <label class="inputLabel" for="price">Giá sản phẩm</label>
                 <input type="text" id="price" name="price" placeholder="Nhập giá sản phẩm">
             </div>
-            <div class="inputDiv">
+            {{!-- <div class="inputDiv">
                 <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
                 <input style="height:50px; padding: 10px;" type="file" id="image" name="image"
                     placeholder="Nhập hình ảnh sản phẩm">
-            </div>
+            </div> --}}
 
             {{#if error}}
             <div class="w-90 mt-5 alert alert-danger text-center">{{error}}</div>
@@ -50,8 +50,13 @@
             {{#if success}}
             <div class="w-90 mt-5 alert alert-success text-center">{{success}}</div>
             {{/if}}
-            <button type="submit" class="submit">Hoàn Thành</button>
+            <div class="notification w-90 text-center">
 
+            </div>
+
+            <button type="submit" class="submit">Hoàn Thành </button>
+            {{!-- <div style="width: 50px; height: 50px; right: 25%; bottom: 0" class="logo"></div> --}}
+            <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0" class="loader"></div>
         </form>
     </div>
 </div>
@@ -76,6 +81,40 @@
 
         });
 
+        {{!-- console.log(window.location.href); --}}
+        $('.loader').hide();
+        $('.submit').click(function(e) {
+            e.preventDefault();
 
+            let pid = $('#pid').val();
+            let pro_name = $('#pro_name').val();
+            let description = $('#description').val();
+            let newGroup = $('#newGroup').val();
+            let price = $('#price').val();
+            let gid = $('.GID').val();
+
+            $('.loader').show();
+            setTimeout(function() {
+                $('.loader').hide();
+                $.ajax({
+                url: window.location.href,
+                method: 'POST',
+                data: {
+                    pid, pro_name, description, gid, newGroup, price
+                },
+                success: function(data) {
+                    $('.notification').html(data);
+                    setTimeout(function() {
+                        $('.notification').children().fadeOut('slow');
+                        
+                    }, 2000)
+                }
+            })
+            },2000)
+
+            
+
+            
+        })
     })
 </script>

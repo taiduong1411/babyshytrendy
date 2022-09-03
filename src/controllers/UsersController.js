@@ -13,9 +13,26 @@ const UsersController = {
         }
     },
     postRegister: (req, res, next) => {
-        const { username, email, phone, password, image, address, level } = req.body;
-        Users.findOne({ email: email }).then(users => {
-            if (!users) {
+        const { username, email, phone, password, address } = req.body;
+
+        
+
+        
+
+        Users.findOne({ email: email }).then(user => {
+            if(user) {
+                req.flash('error', 'Đăng ký thất bại')
+                let error = 'Email đã được sử dụng';
+                // return res.redirect('/users/register')
+                return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
+            }
+            else {
+
+                if(password.length < 6) {
+                    let error = 'Mật khẩu phải có ít nhất 6 kí tự';
+                    return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
+                }
+
                 var newCustomer = {
                     username: username,
                     email: email,
@@ -27,11 +44,10 @@ const UsersController = {
                 }
                 req.flash('success', 'Đăng ký thành công')
                 new Users(newCustomer).save()
-                return res.redirect('/users/login')
-            } else {
-                req.flash('error', 'Đăng ký thất bại')
-                return res.redirect('/users/register')
-            }
+                let success = 'Đăng ký thành công';
+                // return res.redirect('/users/login')
+                return res.send(`<div class="w-90 mt-5 alert alert-success text-center">${success}</div>`)
+            } 
         }).catch(next)
     },
     getLogin: (req, res) => {
@@ -139,13 +155,21 @@ const UsersController = {
         }))
     },
     postaddProduct: (req, res, next) => {
-        const { pid, pro_name, description, gid, newGroup, price, image } = req.body;
+        const { pid, pro_name, description, gid, newGroup, price } = req.body;
+
+        if(!pid || !pro_name || !description || !price) {
+            let error = 'Chưa nhập đủ thông tin';
+            return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
+        }
+
         var newGid = ''
         if (newGroup && !gid) {
             Group.findOne({ name: newGroup }).then(group => {
                 if (group) {
                     req.flash('error', "Ton Tai")
-                    return res.redirect('/users/add-product')
+                    let error = 'Danh mục đã tồn tại';
+                    // return res.redirect('/users/add-product')
+                    return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
                 } else {
                     let temp = newGroup.split(' ');
                     let num = '001';
@@ -158,6 +182,7 @@ const UsersController = {
                         gid: newGid
                     }
                     new Group(newBrand).save()
+                    
                 }
             })
         }
@@ -169,14 +194,18 @@ const UsersController = {
                     pro_name: pro_name,
                     description: description,
                     price: price,
-                    image: image,
+                    
                 }
                 req.flash('success', 'Nhập sản phẩm thành công')
                 new Products(newPro).save()
-                return res.redirect('/users/add-product')
+                let success = 'Nhập sản phẩm thành công'
+                return res.send(`<div class="w-90 mt-5 alert alert-success text-center">${success}</div>`)
+                // return res.redirect('/users/add-product')
             } else {
                 req.flash('error', 'Sản phẩm đã tồn tại')
-                return res.redirect('/users/add-product')
+                let error = 'Sản phẩm đã tồn tại';
+                // return res.redirect('/users/add-product')
+                return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
             }
         })
     }

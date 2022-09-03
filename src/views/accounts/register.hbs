@@ -1,25 +1,29 @@
 <section class="login">
     <div class="login_box">
-        <div class="left">
+        <div style="position: relative;" class="left">
             <div class="top_link"><a href="/users/login"><img
                         src="https://drive.google.com/u/0/uc?id=16U__U5dJdaTfNGobB_OpwAJ73vM50rPV&export=download"
                         alt="">Đăng Nhập</a></div>
             <div class="contact">
                 <form id="register-form" action="/users/register" method="post">
                     <h3>Đăng Ký</h3>
-                    <input name="username" type="text" placeholder="Tên Đăng Nhập">
+                    <input id="username" name="username" type="text" placeholder="Tên Đăng Nhập">
                     <input id="email" name="email" type="email" placeholder="Email">
-                    <input name="phone" type="text" placeholder="Số Điện Thoại">
-                    <input name="address" type="text" placeholder="Địa Chỉ">
-                    <input name="password" type="password" placeholder="Password">
+                    <input id="phone" name="phone" type="text" placeholder="Số Điện Thoại">
+                    <input id="address" name="address" type="text" placeholder="Địa Chỉ">
+                    <input id="password" name="password" type="password" placeholder="Password">
                     {{#if error}}
                     <div class="w-100 mt-5 alert alert-danger text-center">{{error}}</div>
                     {{/if}}
                     {{#if success}}
                     <div class="w-100 mt-5 alert alert-success text-center">{{success}}</div>
                     {{/if}}
-                    <button type="submit" class="submit">Đăng Ký</button>
 
+                    <div style="position: fixed; z-index: 100000; bottom: 0%; left: 40%" class="notification w-90 text-center my-0">
+
+                    </div>
+                    <button type="submit" class="submit">Đăng Ký</button>
+                    <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 10%; bottom: 5%" class="loader"></div>
                 </form>
             </div>
         </div>
@@ -28,10 +32,7 @@
         </div>
     </div>
 </section>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
-<script type="text/javascript"
-    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script>
+{{!-- <script>
     $("#register-form").validate({
         rules: {
             username: {
@@ -81,4 +82,39 @@
             $(form).submit();
         }
     });
+</script> --}}
+
+<script>
+    $(document).ready(function() {
+        
+
+        $('.loader').hide();
+        $('.submit').click(function(e) {
+            e.preventDefault();
+
+            let username = $('#username').val();
+            let email = $('#email').val();
+            let phone = $('#phone').val();
+            let address = $('#address').val();
+            let password = $('#password').val();
+
+            $('.loader').show();
+            setTimeout(function() {
+                $('.loader').hide();
+                $.ajax({
+                    url: window.location.href,
+                    method: 'POST',
+                    data: {
+                        username, email, phone, address, password
+                    },
+                    success: function(data) {
+                        $('.notification').html(data);
+                        setTimeout(function() {
+                            $('.notification').children().fadeOut('slow');
+                        }, 2000);
+                    }
+                })
+            },2000)
+        })
+    })
 </script>

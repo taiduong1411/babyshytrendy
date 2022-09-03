@@ -24,6 +24,8 @@ $("#mainBanner").on("slid.bs.carousel", function(e) {
             .addClass("animated");
     }, 3000);
 });
+
+
 // Add product selection start
 
 // Add product selection end

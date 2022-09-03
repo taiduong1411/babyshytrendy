@@ -671,3 +671,104 @@ input:disabled {
 
 
 /* Add product selection end */
+
+  
+  .wrapper {
+    position: fixed;
+    top: 0;
+    width: 100vw;
+    min-height: 100vh;
+    background-color: var(--color-secondary);
+    display: flex;
+    text-align: center;
+    justify-content: center;
+    align-items: center;
+    /* border: 2px solid red; */
+    z-index: 100000;
+  }
+  
+  .loader {
+    display: none;
+    width: 150px;
+    height: 150px;
+    border: 10px solid transparent;
+    border-radius: 50%;
+    border-top-color: var(--color-quinary);
+    border-bottom-color: var(--color-quinary);
+    animation: spin 1s linear infinite;
+  }
+  
+  .logo {
+    position: absolute;
+    background: url(/img/logo.jpeg);
+    background-position: center;
+    background-size: cover;
+    z-index: 4;
+    width: 100px;
+    height:100px;
+    border-radius: 50%;
+  /*   border: 2px solid red; */
+  animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    
+    50% {
+      transform: rotate(180deg);
+    }
+    
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  ul.pagination {
+    position: relative;
+    background: #fff;
+    display: flex;
+    padding: 10px 20px;
+    border-radius: 50px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+  }
+  
+  ul.pagination li {
+    list-style: none;
+    line-height: 50px;
+    margin: 0 5px;
+  }
+  
+  ul.pagination li.pageNumber {
+    width: 50px;
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+  }
+  
+  ul.pagination li a {
+    display: block;
+    text-decoration: none;
+    color: var(--color-quinary) !important;
+    font-weight: 600;
+    border-radius: 50%;
+  }
+  
+  ul.pagination li.pageNumber:hover a,
+  ul.pagination li.pageNumber.active a {
+    background: #383838;
+    color: #fff;
+  }
+  
+  ul.pagination li:first-child {
+    margin-right: 30px;
+    font-weight: 700;
+    font-size: 20px;
+  }
+  
+  ul.pagination li:last-child {
+    margin-left: 30px;
+    font-weight: 700;
+    font-size: 20px;
+  }
