@@ -27,7 +27,7 @@ const ProductsModel = new Schema({
         slug: 'pro_name'
     },
     gid: {
-        type: String
+        type: String,
     }
 
 
