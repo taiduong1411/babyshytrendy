@@ -1,0 +1,84 @@
+<section class="login">
+    <div class="login_box">
+        <div class="left">
+            <div class="top_link"><a href="/users/login"><img
+                        src="https://drive.google.com/u/0/uc?id=16U__U5dJdaTfNGobB_OpwAJ73vM50rPV&export=download"
+                        alt="">Đăng Nhập</a></div>
+            <div class="contact">
+                <form id="register-form" action="/users/register" method="post">
+                    <h3>Đăng Ký</h3>
+                    <input name="username" type="text" placeholder="Tên Đăng Nhập">
+                    <input id="email" name="email" type="email" placeholder="Email">
+                    <input name="phone" type="text" placeholder="Số Điện Thoại">
+                    <input name="address" type="text" placeholder="Địa Chỉ">
+                    <input name="password" type="password" placeholder="Password">
+                    {{#if error}}
+                    <div class="w-100 mt-5 alert alert-danger text-center">{{error}}</div>
+                    {{/if}}
+                    {{#if success}}
+                    <div class="w-100 mt-5 alert alert-success text-center">{{success}}</div>
+                    {{/if}}
+                    <button type="submit" class="submit">Đăng Ký</button>
+
+                </form>
+            </div>
+        </div>
+        <div class="right">
+            <img src="/img/banner.png" alt="banner">
+        </div>
+    </div>
+</section>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script type="text/javascript"
+    src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+<script>
+    $("#register-form").validate({
+        rules: {
+            username: {
+                required: true,
+                minlength: 6
+            },
+            email: {
+                required: true,
+                email: true
+            },
+            phone: {
+                required: true,
+                number: true,
+                minlength: 11
+            },
+            address: {
+                required: true
+            },
+            password: {
+                required: true,
+                minlength: 6
+            },
+        },
+        messages: {
+            username: {
+                required: "Vui lòng điền tên đăng nhập",
+                minlength: "Tên đăng nhập phải nhiều hơn 6 ký tự"
+            },
+            email: {
+                required: "Vui lòng nhập địa chỉ Email",
+                email: "Email chưa đúng định dạng"
+            },
+            phone: {
+                required: "Vui lòng nhập số điện thoại",
+                number: "Số điện thoại không đúng định dạng",
+                minlength: "Vui lòng kiểm tra lại số điện thoại"
+            },
+            address: {
+                required: "Vui lòng nhập địa chỉ"
+            },
+            password: {
+                required: "Vui lòng nhập mật khẩu",
+                minlength: "Mật khẩu chứa ít nhất 6 ký tự"
+            },
+        },
+        submitHandler: function (form) {
+            $(form).submit();
+        }
+    });
+</script>

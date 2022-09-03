@@ -1,0 +1,78 @@
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+<div class="container-fluid px-0">
+    <nav class="navbar navbar-expand-md navbar-light bg-white p-0">
+        <a class="navbar-brand ml-4" href="/home">
+            <img class="image" width="65" height="65" src="/img/logo.jpeg" alt="logo">
+        </a>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+                <li class="nav-item"> <a class="nav-link" href="#" id="navbarDropdown1" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Quần Áo Nam<span
+                            class="fa fa-angle-down"></span></a>
+                    <div class="dropdown-menu" id="dropdown-menu1" aria-labelledby="navbarDropdown1">
+                        <a class="dropdown-item" href="#">Quần Jeans</a>
+                        <a class="dropdown-item" href="#">Quần Sort</a>
+                        <a class="dropdown-item" href="#">Áo Sơ Mi</a>
+                        <a class="dropdown-item" href="#">Áo Sơ Thun</a>
+                    </div>
+                </li>
+                <li class="nav-item"> <a class="nav-link" href="#" id="navbarDropdown2" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Quần Áo Nữ<span
+                            class="fa fa-angle-down"></span></a>
+                    <div class="dropdown-menu" id="dropdown-menu2" aria-labelledby="navbarDropdown2">
+                        <a class="dropdown-item" href="#">Quần Jeans</a>
+                        <a class="dropdown-item" href="#">Quần Sort</a>
+                        <a class="dropdown-item" href="#">Áo Sơ Mi</a>
+                        <a class="dropdown-item" href="#">Áo Sơ Thun</a>
+                    </div>
+                </li>
+                <li class="nav-item"> <a class="nav-link" href="#" id="navbarDropdown3" role="button"
+                        data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Accessory<span class="fa fa-angle-down"></span></a>
+                    <div class="dropdown-menu" id="dropdown-menu3" aria-labelledby="navbarDropdown3">
+                        <a class="dropdown-item" href="#">Vòng Tay</a>
+                        <a class="dropdown-item" href="#">Nhẫn</a>
+                        <a class="dropdown-item" href="#">Bông Tai</a>
+                    </div>
+                </li>
+            </ul>
+
+            <div><a href="#"><i class="bi bi-cart3"></i></a></div>
+
+            {{#if username}}
+            <div class="username-header">
+
+                <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
+                    aria-expanded="false">
+                    Hi, {{username}}
+                    <i class="fa fa-angle-down"></i>
+                    <ul class="navbar-nav">
+                        <li class="dropdown">
+
+                            <div class="dropdown-menu" id="dropdown-menu4" aria-labelledby="navbarDropdown4">
+                                <a class="dropdown-item" href="/users/change-information">Đổi Thông Tin</a>
+                                <a class="dropdown-item" href="/users/change-password">Đổi Mật Khẩu</a>
+                                <a class="dropdown-item" href="/users/add-product">Nhập Sản Phẩm</a>
+                                {{#if admin}}
+                                <a class="dropdown-item" href="/homeAdmin">Quan Ly</a>
+                                {{/if}}
+                                <a style="display: block; width: 100%;" class="dropdown-item" href="/users/logout">
+                                    Log out
+                                </a>
+                            </div>
+
+                        </li>
+                    </ul>
+                </a>
+            </div>
+            {{!-- <div class="username-header-dropdown">
+
+            </div> --}}
+            {{/if}}
+            {{#if login_icon}}
+            <div><a href="/users/login"><i class="bi bi-person"></i></a></div>
+            {{/if}}
+
+        </div>
+    </nav>
+</div>

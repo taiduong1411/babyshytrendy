@@ -1,0 +1,27 @@
+<section class="login">
+    <div class="login_box">
+        <div class="left">
+            <div class="top_link"><a href="/home"><img
+                        src="https://drive.google.com/u/0/uc?id=16U__U5dJdaTfNGobB_OpwAJ73vM50rPV&export=download"
+                        alt="">Home</a></div>
+            <div class="contact">
+                <form action="/users/login" method="post">
+                    <h3>Đăng Nhập</h3>
+                    <input name="username" type="text" placeholder="Tên Đăng Nhập">
+                    <input name="password" type="password" placeholder="Mật Khẩu">
+                    <a style="margin-left: 50px;" href="/users/register">Đăng ký tài khoản</a>
+                    {{#if error}}
+                    <div class="w-100 mt-5 alert alert-danger text-center">{{error}}</div>
+                    {{/if}}
+                    {{#if success}}
+                    <div class="w-100 mt-5 alert alert-success text-center">{{success}}</div>
+                    {{/if}}
+                    <button type="submit" class="submit">Đăng Nhập</button>
+                </form>
+            </div>
+        </div>
+        <div class="right">
+            <img src="/img/banner.png" alt="banner">
+        </div>
+    </div>
+</section>

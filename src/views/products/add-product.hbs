@@ -1,0 +1,81 @@
+<div class="mainDiv">
+    <div class="cardStyle">
+        <form action="/users/add-product" method="post">
+
+            <img src="/img/logo.jpeg" id="signupLogo" />
+            <h2 class="formTitle">
+                Nhập Sản Phẩm
+            </h2>
+            <div class="inputDiv">
+                <label class="inputLabel" for="type">Loại Sản Phẩm</label>
+                <select id="selector" name="gid" class="form-control">
+                    <option selected>Select your option</option>
+                    {{#each options}}
+                    <option class="GID" value="{{gid}}">{{name}}</option>
+                    {{/each}}
+                    <option value="">Khác</option>
+                </select>
+            </div>
+
+            <div class="inputDiv" id="newGroup" style="display: none;">
+                <label class="inputLabel" for="newGroup">Loai San Pham Khac</label>
+                <input name="newGroup" type="text" id="newGroup" placeholder="Nhập Loại Sản Phẩm Khác">
+            </div>
+
+            <div class="inputDiv">
+                <label class="inputLabel" for="gid">ID San Pham</label>
+                <input type="text" id="pid" name="pid" placeholder="Nhập mã sản phẩm">
+            </div>
+            <div class="inputDiv">
+                <label class="inputLabel" for="pro_name">Tên Sản Phẩm</label>
+                <input type="text" id="pro_name" name="pro_name" placeholder="Nhập tên sản phẩm">
+            </div>
+            <div class="inputDiv">
+                <label class="inputLabel" for="description">Mô tả</label>
+                <input type="text" id="description" name="description" placeholder="Nhập mô tả sản phẩm">
+            </div>
+            <div class="inputDiv">
+                <label class="inputLabel" for="price">Giá sản phẩm</label>
+                <input type="text" id="price" name="price" placeholder="Nhập giá sản phẩm">
+            </div>
+            <div class="inputDiv">
+                <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
+                <input style="height:50px; padding: 10px;" type="file" id="image" name="image"
+                    placeholder="Nhập hình ảnh sản phẩm">
+            </div>
+
+            {{#if error}}
+            <div class="w-90 mt-5 alert alert-danger text-center">{{error}}</div>
+            {{/if}}
+            {{#if success}}
+            <div class="w-90 mt-5 alert alert-success text-center">{{success}}</div>
+            {{/if}}
+            <button type="submit" class="submit">Hoàn Thành</button>
+
+        </form>
+    </div>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+<script>
+    $(document).ready(function () {
+        $('#selector').on('change', function () {
+            if ($(this).val() === "") {
+                $("#newGroup").show();
+            }
+            else {
+                $("#newGroup").hide();
+            }
+        });
+        $('select#selector').change(function () {
+            console.log(window.location.href)
+
+            let gid = $(this).children(':selected').val();
+
+            $('#pid').val(gid)
+
+        });
+
+
+    })
+</script>
