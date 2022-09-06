@@ -34,10 +34,14 @@ app.set('views', path.join(__dirname, 'views'));
 
 
 app.get('/home', (req, res) => {
-    const { pid, pro_name, price, image } = req.body;
+    const page = req.query.page || 1;
+    const nProducts = 4;
+    const skip = nProducts * (page - 1); // 0 4 8 12 16
+
     Products.find({})
         .sort({ createdAt: -1 })
-        .limit(4)
+        .limit(nProducts)
+        .skip(skip)
         .then((products) => {
             if (!products) {
                 return res.render('home', {
@@ -77,7 +81,7 @@ app.get('/home', (req, res) => {
 app.use('/users', UsersRouter);
 app.use('/product', ProductsRouter);
 app.get('/', (req, res) => {
-    return res.render('home')
+    return res.redirect('/home');
 })
 
 // localhost

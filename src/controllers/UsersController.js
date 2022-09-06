@@ -71,6 +71,7 @@ const UsersController = {
                     req.session.email = users.email;
                     req.session.phone = users.phone;
                     req.session.address = users.address;
+                    
                     return res.redirect('/home')
                 } else {
                     return res.render('login')
