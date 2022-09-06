@@ -33,10 +33,28 @@ app.set('views', path.join(__dirname, 'views'));
 // config end
 
 
-app.get('/home', (req, res) => {
-    const page = req.query.page || 1;
+app.get('/home', async (req, res) => {
+    const page = parseInt(req.query.page) || 1;
     const nProducts = 4;
     const skip = nProducts * (page - 1); // 0 4 8 12 16
+
+    const total = await Products.countDocuments()
+        .then(count => {
+            return count;
+        }) // 6
+
+    let n = Math.ceil(total / nProducts); // 2 trang
+    
+    let html = '';
+    for(let i = 1; i <= n; i++) {
+        if(i == page) {
+            html += `<li class="pageNumber active"><a href="/home?page=${i}">${i}</a></li>`
+        }
+        else {
+            html += `<li class="pageNumber"><a href="/home?page=${i}">${i}</a></li>`
+        }
+
+    }
 
     Products.find({})
         .sort({ createdAt: -1 })
@@ -60,20 +78,15 @@ app.get('/home', (req, res) => {
                 }
             });
             // console.log(data);
-            if (!req.session.username) {
-                return res.render('home', {
-                    login_icon: true,
-                    username: true,
-                    username: req.session.username,
-                    data: data
-                })
-            } else {
-                return res.render('home', {
-                    username: true,
-                    username: req.session.username,
-                    data: data
-                })
-            }
+            return res.render('home', {
+                login_icon: (req.session.username) ? false : true,
+                username: true,
+                username: req.session.username,
+                data: data,
+                next: page+1,
+                prev: page-1,
+                pages: html,
+            })
         })
 
 
