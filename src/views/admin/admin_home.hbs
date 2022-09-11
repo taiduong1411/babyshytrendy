@@ -1,0 +1,66 @@
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
+            <i class="fa fa-bars"></i>
+        </a> --}}
+
+        <nav class="s-sidebar__nav">
+
+
+            <ul>
+
+
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <main class="s-layout__content">
+        <h1>Tổng Hàng Trong Kho: {{totalProduct}}</h1>
+    </main>
+</div>
+<div class="wrapper">
+    <div class="loader">
+
+    </div>
+
+    <div class="logo">
+
+    </div>
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.wrapper').fadeOut();
+        }, 500)
+    })
+</script>

@@ -18,12 +18,14 @@ const ProductsController = {
                 pro_name: product.pro_name,
                 description: product.description,
                 image: product.image,
-                price: product.price,
+                price: (product.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
                 slug: product.slug,
                 gid: product.gid
             }
             return res.render('products/product-detail', {
-                data: data
+                data: data,
+                header: true,
+                username: (req.session.username) ? req.session.username : 'Customer'
             })
         })
     },

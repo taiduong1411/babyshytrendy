@@ -1,0 +1,138 @@
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
+            <i class="fa fa-bars"></i>
+        </a> --}}
+
+        <nav class="s-sidebar__nav">
+
+
+            <ul>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="mainDiv">
+        <div class="cardStyle">
+            <form class="form_addProduct" style="position: relative;" action="/admin/add-product" method="post"
+                enctype="multipart/form-data">
+                {{!-- <img src="/img/logo.jpeg" id="signupLogo" /> --}}
+                <h2 class="formTitle">
+                    Nhập Sản Phẩm
+                </h2>
+                {{#if error}}
+                <div id="error" style="width: 400px; margin:auto;" class="mt-5 alert alert-danger text-center">{{error}}
+                </div>
+                {{/if}}
+                {{#if success}}
+                <div id="success" style="width: 400px; margin:auto;" class="mt-5 alert alert-success text-center">
+                    {{success}}</div>
+                {{/if}}
+                <div class="inputDiv">
+                    <label class="inputLabel" for="type">Loại Sản Phẩm</label>
+                    <select id="selector" name="gid" class="form-control">
+                        <option selected>Select your option</option>
+                        {{#each options}}
+                        <option class="GID" value="{{gid}}">{{name}}</option>
+                        {{/each}}
+                        <option value="">Khác</option>
+                    </select>
+                </div>
+
+                <div class="inputDiv" id="newGroup" style="display: none;">
+                    <label class="inputLabel" for="newGroup">Loai San Pham Khac</label>
+                    <input name="newGroup" type="text" id="newGroup" placeholder="Nhập Loại Sản Phẩm Khác">
+                </div>
+
+                <div class="inputDiv">
+                    <label class="inputLabel" for="gid">ID San Pham</label>
+                    <input type="text" id="pid" name="pid" placeholder="Nhập mã sản phẩm">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="pro_name">Tên Sản Phẩm</label>
+                    <input type="text" id="pro_name" name="pro_name" placeholder="Nhập tên sản phẩm">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="description">Mô tả</label>
+                    <input type="text" id="description" name="description" placeholder="Nhập mô tả sản phẩm">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="price">Giá sản phẩm</label>
+                    <input type="text" id="price" name="price" placeholder="Nhập giá sản phẩm">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="amount">Số lượng sản phẩm</label>
+                    <input type="text" id="amount" name="amount" placeholder="Nhập số lượng sản phẩm">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
+                    <input style="height:50px; padding: 10px;" type="file" id="image" name="image"
+                        placeholder="Nhập hình ảnh sản phẩm">
+                </div>
+                <button type="submit" class="submit">Hoàn Thành </button>
+                <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"
+                    class="loader"></div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#selector').on('change', function () {
+            if ($(this).val() === "") {
+                $("#newGroup").show();
+            }
+            else {
+                $("#newGroup").hide();
+            }
+        });
+        $('select#selector').change(function () {
+            let gid = $(this).children(':selected').val();
+
+            $('#pid').val(gid)
+
+        });
+        $('.loader').hide();
+        $('.submit').click(function (e) {
+            $('.loader').show();
+            setTimeout(function () {
+                $('.loader').hide();
+            }, 700)
+        })
+        setTimeout(function () {
+            $('#error').fadeOut('slow')
+            $('#success').fadeOut('slow')
+        }, 2000)
+    })
+</script>

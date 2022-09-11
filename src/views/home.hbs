@@ -30,22 +30,23 @@
         </a>
     </div>
     <div class="container">
+        {{#if newCollection}}
         <div style="background-color: var(--color-main); border-radius: 10px;">
             <h1 style="text-align: center; font-family: Script; font-size: 60px; letter-spacing: 40px" class="mt-5"> NEW
                 COLLECTION</h1>
         </div>
-
+        {{/if}}
         <div class="row mt-5">
             {{#each data}}
             <div class="col-sm-6 col-lg-3">
                 <div class="product-img">
-                    <img onclick="window.location.href = '/product/{{slug}}'" width="100" height="300" src="{{image}}"
+                    <img onclick="window.location.href = '/product/{{slug}}'" width="100" height="250" src="{{image}}"
                         alt="{{image}}">
                 </div>
-                <div class="product-info">
-                    <h6 class="product-title mt-3 ml-2">[{{pid}}] {{pro_name}}</h6>
-                    <div class="mt-2 ml-2" style="text-decoration:line-through; color: grey">2.500.000đ</div>
-                    <div class="mt-2 ml-2">Giá: {{price}}đ</div>
+                <div class="product-info mb-3">
+                    <h6 class="product-title ml-2">[{{pid}}] {{pro_name}}</h6>
+                    <div class="mt-2 ml-2" style="text-decoration:line-through; color: grey">500.000đ</div>
+                    <div class="mt-2 ml-2">Giá: {{price}}</div>
 
                     <button class="text-center submit-cart mt-3">
                         <a class="text-decoration-none" href="#">Mua Ngay <i class="fa fa-shopping-cart"></i></a>
@@ -56,21 +57,23 @@
 
         </div>
 
-        
-        <div class="row">
-            <div class="col-md-12 d-flex justify-content-center">
-                <ul class="pagination">
-                <li><a href="/home?page={{prev}}" class="prev">< Prev</a></li>
 
-                {{{pages}}}
-                {{!-- <li class="pageNumber active"><a href="/home">1</a></li>
-                <li class="pageNumber"><a href="/home?page=2">2</a></li>
-                <li class="pageNumber"><a href="/home?page=3">3</a></li>
-                <li class="pageNumber"><a href="/home?page=4">4</a></li>
-                <li class="pageNumber"><a href="/home?page=5">5</a></li>
-                <li class="pageNumber"><a href="/home?page=6">6</a></li> --}}
-                <li><a href="/home?page={{next}}" class="next">Next ></a></li>
-            </ul>
+        <div class="row">
+            <div class="col-md-12 d-flex justify-content-center mt-5">
+                <ul class="pagination">
+                    <li><a href="/home?page={{prev}}" class="prev">
+                            <i class="fa fa-arrow-left"> </i></a>
+                    </li>
+
+                    {{{pages}}}
+                    {{!-- <li class="pageNumber active"><a href="/home">1</a></li>
+                    <li class="pageNumber"><a href="/home?page=2">2</a></li>
+                    <li class="pageNumber"><a href="/home?page=3">3</a></li>
+                    <li class="pageNumber"><a href="/home?page=4">4</a></li>
+                    <li class="pageNumber"><a href="/home?page=5">5</a></li>
+                    <li class="pageNumber"><a href="/home?page=6">6</a></li> --}}
+                    <li><a href="/home?page={{next}}" class="next"><i class="fa fa-arrow-right"></i></a></li>
+                </ul>
             </div>
         </div>
 
@@ -79,15 +82,21 @@
 </div>
 
 
-{{!-- <div class="wrapper">
-  <div class="loader">
-    
-  </div>
-  
-  <div class="logo">
+<div class="wrapper">
+    <div class="loader">
 
-      </div>
-  
-  
+    </div>
+
+    <div class="logo">
+
+    </div>
+
+
 </div>
- --}}
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.wrapper').fadeOut();
+        }, 500)
+    })
+</script>

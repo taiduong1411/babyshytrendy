@@ -1,0 +1,100 @@
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
+            <i class="fa fa-bars"></i>
+        </a> --}}
+
+        <nav class="s-sidebar__nav">
+            <ul class="ml-2">
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="s-layout__content">
+        <h1 style="text-align:center;" class="mt-3 mb-5">Danh Sách Sản Phẩm</h1>
+        <table class="table ml-3 mr-3">
+            <thead>
+                <tr>
+                    <th scope="col">ID Sản Phẩm</th>
+                    <th scope="col">Tên Sản Phẩm</th>
+                    <th scope="col">Giá Sản Phẩm</th>
+                    <th scope="col">Số Lượng</th>
+                </tr>
+            </thead>
+            <tbody>
+                {{#each listProduct}}
+                <tr>
+                    <th scope="row">{{pid}}</th>
+                    <td>
+                        <img style="width: 35px; height:35px;" src="{{image}}" alt="{{image}}">
+                        {{pro_name}}
+                    </td>
+                    <td>{{price}}</td>
+                    <td>
+                        <button class="btn btn-success">{{amount}}</button>
+                    </td>
+                    <td style="width: 120px;">
+                        <a href="/admin/delete-product/{{id}}" class="btn btn-danger"><i class="fa fa-trash"></i></a>
+                        <a href="/admin/edit-product" class="btn btn-success"><i class="fa fa-edit"></i></a>
+                    </td>
+                </tr>
+                {{/each}}
+                {{#if error}}
+                <div id="error" style="width: 400px; margin:auto;" class="mt-5 alert alert-danger text-center">{{error}}
+                </div>
+                {{/if}}
+                {{#if success}}
+                <div id="success" style="width: 400px; margin:auto;" class="mt-5 alert alert-success text-center">
+                    {{success}}</div>
+                {{/if}}
+            </tbody>
+        </table>
+        <h1 class="ml-5 mt-5">Total: &nbsp {{totalPrice}} </h1>
+    </div>
+</div>
+<div class="wrapper">
+    <div class="loader">
+
+    </div>
+
+    <div class="logo">
+
+    </div>
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.wrapper').fadeOut();
+        }, 500)
+    })
+</script>

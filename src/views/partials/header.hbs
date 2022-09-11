@@ -1,8 +1,9 @@
 <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+{{#if header}}
 <div class="container-fluid px-0">
     <nav class="navbar navbar-expand-md navbar-light bg-white p-0">
         <a class="navbar-brand ml-4" href="/home">
-            <img class="image" width="65" height="65" src="/img/logo.jpeg" alt="logo">
+            <img class="image" width="50" height="65" src="/img/logo.jpeg" alt="logo">
         </a>
         <div class="collapse navbar-collapse" id="navbarNav">
             <ul class="navbar-nav">
@@ -35,8 +36,13 @@
                         <a class="dropdown-item" href="#">Bông Tai</a>
                     </div>
                 </li>
+                <form class="formSearch" action="/users/search" method="get">
+                    <div class="form-group has-search">
+                        <span class="fa fa-search form-control-feedback"></span>
+                        <input id="search" name="pro_name" type="text" class="form-control" placeholder="Search">
+                    </div>
+                </form>
             </ul>
-
             <div><a href="#"><i class="bi bi-cart3"></i></a></div>
 
             {{#if username}}
@@ -52,12 +58,11 @@
                             <div class="dropdown-menu" id="dropdown-menu4" aria-labelledby="navbarDropdown4">
                                 <a class="dropdown-item" href="/users/change-information">Đổi Thông Tin</a>
                                 <a class="dropdown-item" href="/users/change-password">Đổi Mật Khẩu</a>
-                                <a class="dropdown-item" href="/users/add-product">Nhập Sản Phẩm</a>
                                 {{#if admin}}
-                                <a class="dropdown-item" href="/homeAdmin">Quan Ly</a>
+                                <a class="dropdown-item" href="/admin/admin_home">Trang Quản Lý</a>
                                 {{/if}}
                                 <a style="display: block; width: 100%;" class="dropdown-item" href="/users/logout">
-                                    Log out
+                                    Đăng Xuất
                                 </a>
                             </div>
 
@@ -76,3 +81,4 @@
         </div>
     </nav>
 </div>
+{{/if}}

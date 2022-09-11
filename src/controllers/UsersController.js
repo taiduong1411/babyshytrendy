@@ -14,25 +14,18 @@ const UsersController = {
     },
     postRegister: (req, res, next) => {
         const { username, email, phone, password, address } = req.body;
-
-        
-
-        
-
         Users.findOne({ email: email }).then(user => {
-            if(user) {
+            if (user) {
                 req.flash('error', 'Đăng ký thất bại')
                 let error = 'Email đã được sử dụng';
                 // return res.redirect('/users/register')
                 return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
-            }
-            else {
+            } else {
 
-                if(password.length < 6) {
+                if (password.length < 6) {
                     let error = 'Mật khẩu phải có ít nhất 6 kí tự';
                     return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
                 }
-
                 var newCustomer = {
                     username: username,
                     email: email,
@@ -47,7 +40,7 @@ const UsersController = {
                 let success = 'Đăng ký thành công';
                 // return res.redirect('/users/login')
                 return res.send(`<div class="w-90 mt-5 alert alert-success text-center">${success}</div>`)
-            } 
+            }
         }).catch(next)
     },
     getLogin: (req, res) => {
@@ -61,7 +54,7 @@ const UsersController = {
         }
     },
     postLogin: (req, res, next) => {
-        const { username, email, phone, password, level } = req.body;
+        const { username, email, phone, password } = req.body;
         Users.findOne({ username: username }).then(users => {
             if (!users) {
                 return res.redirect('/users/register')
@@ -71,8 +64,13 @@ const UsersController = {
                     req.session.email = users.email;
                     req.session.phone = users.phone;
                     req.session.address = users.address;
-                    
-                    return res.redirect('/home')
+                    req.session.level = users.level;
+                    // console.log(req.session.level);
+                    if (users.level == 'admin') {
+                        return res.redirect('/home')
+                    } else {
+                        return res.redirect('/home')
+                    }
                 } else {
                     return res.render('login')
                 }
@@ -138,77 +136,83 @@ const UsersController = {
             }
         })
     },
-    getaddProduct: (req, res) => {
-        let error = req.flash('error' || '');
-        let success = req.flash('success' || '');
-        Group.find({}).then((groups => {
-            const options = groups.map(g => {
-                return {
-                    name: g.name,
-                    gid: g.gid
-                }
-            })
-            return res.render('products/add-product', {
-                error: error,
-                success: success,
-                options: options
-            })
-        }))
-    },
-    postaddProduct: (req, res, next) => {
-        const { pid, pro_name, description, gid, newGroup, price } = req.body;
-
-        if(!pid || !pro_name || !description || !price) {
-            let error = 'Chưa nhập đủ thông tin';
-            return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
-        }
-
-        var newGid = ''
-        if (newGroup && !gid) {
-            Group.findOne({ name: newGroup }).then(group => {
-                if (group) {
-                    req.flash('error', "Ton Tai")
-                    let error = 'Danh mục đã tồn tại';
-                    // return res.redirect('/users/add-product')
-                    return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
-                } else {
-                    let temp = newGroup.split(' ');
-                    let num = '001';
-                    temp.forEach(t => {
-                        newGid += t[0].toUpperCase();
+    getSearch: (req, res) => {
+        Products.find({})
+            .then((products) => {
+                if (!products) {
+                    return res.render('home', {
+                        username: true,
+                        username: req.session.username,
+                        posts: []
                     })
-                    newGid = newGid + num;
-                    const newBrand = {
-                        name: newGroup,
-                        gid: newGid
+                }
+                var posts = products.map(products => {
+                    return {
+                        pid: products.pid,
+                        pro_name: products.pro_name,
+                        description: products.description,
+                        price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                        image: products.image,
+                        slug: products.slug,
+                        gid: products.gid
                     }
-                    new Group(newBrand).save()
-                    
+                });
+                // console.log(posts[2])
+                var pro_name = req.query.pro_name;
+                if (pro_name == '') {
+                    return res.redirect('/home')
                 }
+                var data = posts.filter(function(products) {
+                    return (products.pro_name)
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                        .toLowerCase().trim()
+                        .indexOf(pro_name.toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/đ/g, 'd').replace(/Đ/g, 'D')) !== -1
+                });
+                if (data == '') {
+                    Products.find({})
+                        .limit(8)
+                        .sort({ createdAt: -1 })
+                        .then((products => {
+                            if (!products) {
+                                return res.render('products/search', {
+                                    username: true,
+                                    username: req.session.username,
+                                    posts_nodata: []
+                                })
+                            }
+                            let posts_nodata = products.map(products => {
+                                return {
+                                    pid: products.pid,
+                                    pro_name: products.pro_name,
+                                    description: products.description,
+                                    price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
+                                    image: products.image,
+                                    slug: products.slug,
+                                    gid: products.gid
+                                }
+                            });
+                            return res.render('products/search', {
+                                error_data: true,
+                                data: posts_nodata,
+                                header: true,
+                                username: (req.session.username) ? req.session.username : "Customer"
+                            })
+                        }))
+                } else {
+                    res.render('products/search', {
+                        dataSearch: data,
+                        header: true,
+                        username: (req.session.username) ? req.session.username : "Customer"
+                    })
+                }
+                // console.log(data)
+
             })
-        }
-        Products.findOne({ pid: pid }).then((product) => {
-            if (!product) {
-                var newPro = {
-                    pid: pid,
-                    gid: (gid) ? gid : newGid,
-                    pro_name: pro_name,
-                    description: description,
-                    price: price,
-                    
-                }
-                req.flash('success', 'Nhập sản phẩm thành công')
-                new Products(newPro).save()
-                let success = 'Nhập sản phẩm thành công'
-                return res.send(`<div class="w-90 mt-5 alert alert-success text-center">${success}</div>`)
-                // return res.redirect('/users/add-product')
-            } else {
-                req.flash('error', 'Sản phẩm đã tồn tại')
-                let error = 'Sản phẩm đã tồn tại';
-                // return res.redirect('/users/add-product')
-                return res.send(`<div class="w-90 mt-5 alert alert-danger text-center">${error}</div>`)
-            }
-        })
     }
 }
 
