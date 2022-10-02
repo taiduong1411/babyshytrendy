@@ -19,7 +19,7 @@ const ProductsRouter = require('./routers/ProductsRouter');
 const AdminRouter = require('./routers/AdminRouter');
 // APIs
 const AdminAPI = require('./API/AdminAPI');
-const port = 3000;
+const port = process.env.PORT || 3000;
 database.connect();
 //  config
 app.set('view engine', 'hbs');
