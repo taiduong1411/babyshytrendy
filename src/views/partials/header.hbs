@@ -44,17 +44,15 @@
                 </form>
             </ul>
             <div><a href="#"><i class="bi bi-cart3"></i></a></div>
-
             {{#if username}}
             <div class="username-header">
-
                 <a class="nav-link" href="#" role="button" data-toggle="dropdown" aria-haspopup="true"
                     aria-expanded="false">
-                    Hi, {{username}}
+                    <img style="border-radius: 50%; width: 35px; height: 35px;" src="{{avatar}}" alt="avatar">&nbsp;
+                    {{username}}
                     <i class="fa fa-angle-down"></i>
                     <ul class="navbar-nav">
                         <li class="dropdown">
-
                             <div class="dropdown-menu" id="dropdown-menu4" aria-labelledby="navbarDropdown4">
                                 <a class="dropdown-item" href="/users/change-information">Đổi Thông Tin</a>
                                 <a class="dropdown-item" href="/users/change-password">Đổi Mật Khẩu</a>
@@ -62,17 +60,13 @@
                                 <a class="dropdown-item" href="/admin/admin_home">Trang Quản Lý</a>
                                 {{/if}}
                                 <a style="display: block; width: 100%;" class="dropdown-item" href="/users/logout">
-                                    Đăng Xuất
+                                    <i class="fa fa-sign-out" aria-hidden="true"></i> Đăng Xuất
                                 </a>
                             </div>
-
                         </li>
                     </ul>
                 </a>
             </div>
-            {{!-- <div class="username-header-dropdown">
-
-            </div> --}}
             {{/if}}
             {{#if login_icon}}
             <div><a href="/users/login"><i class="bi bi-person"></i></a></div>

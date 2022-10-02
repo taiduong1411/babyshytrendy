@@ -33,7 +33,7 @@ const UsersController = {
                     password: password,
                     image: 'https://www.w3schools.com/howto/img_avatar2.png',
                     address: address,
-                    level: 'customer'
+                    level: 'customer',
                 }
                 req.flash('success', 'Đăng ký thành công')
                 new Users(newCustomer).save()
@@ -54,38 +54,37 @@ const UsersController = {
         }
     },
     postLogin: (req, res, next) => {
-        const { username, email, phone, password } = req.body;
-        Users.findOne({ username: username }).then(users => {
-            if (!users) {
+        const { username, password } = req.body;
+        Users.findOne({ username: username }).then(async user => {
+            if (!user) {
                 return res.redirect('/users/register')
             } else {
-                if (password == users.password) {
-                    req.session.username = users.username;
-                    req.session.email = users.email;
-                    req.session.phone = users.phone;
-                    req.session.address = users.address;
-                    req.session.level = users.level;
-                    // console.log(req.session.level);
-                    if (users.level == 'admin') {
-                        return res.redirect('/home')
-                    } else {
-                        return res.redirect('/home')
-                    }
+                if (password == user.password) {
+                    req.session.username = user.username;
+                    req.session.image = user.image;
+                    req.session.level = user.level;
+                    user.isLogin = true;
+                    await user.save();
+                    return res.redirect('/home')
                 } else {
                     return res.render('login')
                 }
-
             }
         })
     },
-    getLogout: (req, res) => {
-        req.session.destroy();
-        return res.redirect('/home')
+    getLogout: async(req, res) => {
+        await Users.findOne({ username: req.session.username }).then(async user => {
+            if (!user) {
+                return res.redirect('/users/login')
+            } else {
+                user.isLogin = false;
+                await user.save();
+                req.session.destroy();
+                return res.redirect('/home')
+            }
+        })
     },
     getchangePassword: (req, res) => {
-        if (!req.session.username) {
-            return res.redirect('/users/login')
-        }
         return res.render('account/change-password', {
             username: true,
             username: req.session.username
@@ -109,9 +108,6 @@ const UsersController = {
             email: req.session.email,
             phone: req.session.phone,
             address: req.session.address
-        }
-        if (!req.session.username) {
-            return res.redirect('/users/login')
         }
         return res.render('accounts/change-information', {
             username: true,

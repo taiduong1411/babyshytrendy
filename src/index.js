@@ -9,12 +9,16 @@ const multer = require('multer');
 const queryString = require('query-string');
 const bodyParser = require('body-parser');
 const database = require('./config/database');
+// Models
 const Users = require('./models/Users');
 const Products = require('./models/Products');
 const Group = require('./models/Group');
+// Routers
 const UsersRouter = require('./routers/UsersRouter');
 const ProductsRouter = require('./routers/ProductsRouter');
 const AdminRouter = require('./routers/AdminRouter');
+// APIs
+const AdminAPI = require('./API/AdminAPI');
 const port = 3000;
 database.connect();
 //  config
@@ -89,10 +93,13 @@ app.get('/home', async(req, res) => {
                 username: true,
                 admin: (req.session.level == 'admin') ? true : false,
                 username: req.session.username,
+                avatar: req.session.image,
                 data: data,
                 next: page + 1,
                 prev: page - 1,
                 pages: html,
+                displayPrev: (page == 1) ? 'd-none' : '',
+                displayNext: (page == n) ? 'd-none' : ''
             })
         })
 });

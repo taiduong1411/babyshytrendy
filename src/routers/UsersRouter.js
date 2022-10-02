@@ -1,13 +1,15 @@
 const express = require('express');
 const router = express.Router();
 const UsersController = require('../controllers/UsersController');
+const check_Admin_account = require('../middlewares/validate');
+const check_User_account = require('../middlewares/validatorUser');
+
 
 router.get('/register', UsersController.getRegister);
 router.get('/login', UsersController.getLogin);
-router.get('/logout', UsersController.getLogout);
-router.get('/change-password', UsersController.getchangePassword);
-router.get('/change-information', UsersController.getchangeInformation);
-// router.get('/add-product', UsersController.getaddProduct);
+router.get('/logout', check_User_account, UsersController.getLogout);
+router.get('/change-password', check_User_account, UsersController.getchangePassword);
+router.get('/change-information', check_User_account, UsersController.getchangeInformation);
 router.get('/search', UsersController.getSearch);
 
 router.post('/register', UsersController.postRegister);

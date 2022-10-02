@@ -127,7 +127,8 @@ a {
 }
 
 .nav-link {
-    padding: 5px
+    padding: 5px;
+    margin-left: -20px;
 }
 
 .navbar-collapse.collapse.in {

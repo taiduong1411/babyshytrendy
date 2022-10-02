@@ -5,68 +5,40 @@ const Group = require('../models/Group');
 const AdminAPI = require('../API/AdminAPI');
 const AdminController = {
     getAdmin: (req, res) => {
-        // if (req.session.level != 'admin') {
-        //     return res.redirect('/home')
-        // }
         return res.render('admin/admin_home', {
             username: req.session.username,
-            // totalProduct: total
         });
     },
     getlistProduct: async(req, res) => {
+        let error = req.flash('error') || ""
+        let success = req.flash('success') || ""
         const { _id } = req.body;
-        if (req.session.level != 'admin') {
-            return res.redirect('/users/login')
-        }
         let products = await AdminAPI.getAll({ sort: -1 })
         if (!products) {
             return res.render('admin/list-product', {
                 username: req.session.username,
                 data: [],
-
             })
         }
-        let error = req.flash('error') || ""
-        let success = req.flash('success') || ""
-        let data = products.map(products => {
-            return {
-                pid: products.pid,
-                pro_name: products.pro_name,
-                price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                image: products.image,
-                slug: products.slug,
-                amount: products.amount,
-                id: products._id.toString()
-            }
-        });
-        var price = products.map(function(products) {
-            return products.price;
-        });
-
-        var amount = products.map(function(products) {
-            return products.amount
-        });
-
-        var total = price.reduce(function(r, a, i) { return r + a * amount[i] }, 0);
+        let result_1 = await AdminAPI.getTotal();
+        var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
         return res.render('admin/list-product', {
-            listProduct: data,
+            listProduct: products,
             username: req.session.username,
             totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" }),
             error: error,
             success: success
         })
-
     },
     getdeleteProduct: async(req, res) => {
         const idUrl = req.params.id;
-        // console.log(idUrl);
         await AdminAPI.delete(idUrl)
             .then(products => {
                 if (!products) {
-                    req.flash('error', 'That Bai')
+                    req.flash('error', 'Không thể xoá sản phẩm')
                     return res.redirect('/admin/list-product')
                 } else {
-                    req.flash('success', 'Thanh Cong')
+                    req.flash('success', 'Xoá sản phẩm thành công')
                     return res.redirect('/admin/list-product')
                 }
             })
@@ -88,6 +60,34 @@ const AdminController = {
                 username: req.session.username
             })
         }))
+    },
+    getAdminSearch: async(req, res, next) => {
+        let products = await AdminAPI.getAll({ sort: 1 })
+        if (!products) {
+            return res.render('admin/list-product', {
+                username: true,
+                username: req.session.username,
+                posts: []
+            })
+        }
+        var pro_name = req.query.pro_name;
+        let query = { '$or': [{ pid: { $regex: `${pro_name}`, "$options": "i" } }, { pro_name: { $regex: `${pro_name}`, "$options": "i" } }] }
+        if (pro_name == '') {
+            return res.redirect('/admin/list-product')
+        }
+        var data_name = await AdminAPI.getSearchByName(query);
+
+        var result_1 = await AdminAPI.getTotal();
+        var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
+        if (data_name == '') {
+            req.flash('error', 'Khong tim thay san pham')
+            return res.redirect('/admin/list-product')
+        } else {
+            res.render('admin/list-product', {
+                listProduct: data_name,
+                totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" })
+            })
+        }
     },
     postaddProduct: async(req, res, next) => {
         const { pid, pro_name, description, gid, newGroup, price, image, amount } = req.body;
@@ -145,7 +145,20 @@ const AdminController = {
             })
     },
     getDashboard: (req, res) => {
-        return res.render('admin/dashboard')
+        return res.render('admin/admin_home')
+    },
+    getUserList: async(req, res) => {
+        let error = req.flash('error') || ""
+        let success = req.flash('success') || ""
+        const { _id } = req.body;
+        let users = await AdminAPI.getUser({ sort: -1 })
+            // console.log(users)
+        return res.render('admin/list-users', {
+            listUsers: users,
+            username: req.session.username,
+            error: error,
+            success: success
+        })
     }
 }
 

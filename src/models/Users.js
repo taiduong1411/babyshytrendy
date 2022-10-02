@@ -29,6 +29,10 @@ const UsersModel = new Schema({
     level: {
         type: String,
         required: true
+    },
+    isLogin: {
+        type: Boolean,
+        default: false
     }
 });
 

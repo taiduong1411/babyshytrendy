@@ -30,6 +30,11 @@
                     </a>
                 </li>
                 <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-users">
+                        <i class="fa fa-list"></i><em>Danh Sách Nguoi Dung</em>
+                    </a>
+                </li>
+                <li>
                     <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
                         <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
                     </a>
@@ -82,7 +87,8 @@
                 </div>
                 <div class="inputDiv">
                     <label class="inputLabel" for="description">Mô tả</label>
-                    <input type="text" id="description" name="description" placeholder="Nhập mô tả sản phẩm">
+                    <textarea class="p-2" type="text" id="description" name="description"
+                        placeholder="Nhập mô tả sản phẩm"></textarea>
                 </div>
                 <div class="inputDiv">
                     <label class="inputLabel" for="price">Giá sản phẩm</label>
