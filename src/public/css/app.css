@@ -113,6 +113,11 @@ h1:hover span {
     margin-left: 300px;
 }
 
+.dark-mode-main {
+    background-color: rgb(31, 31, 31) !important;
+    color: white;
+}
+
 
 /* .nav-item.active {
     color: #EF5350
@@ -371,10 +376,6 @@ footer a {
 footer a:hover {
     color: #FA944B;
     text-decoration: none;
-}
-
-.container {
-    /* text-align: center; */
 }
 
 .copy {

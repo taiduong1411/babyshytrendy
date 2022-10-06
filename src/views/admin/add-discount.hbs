@@ -1,0 +1,76 @@
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
+            <i class="fa fa-bars"></i>
+        </a> --}}
+
+        <nav class="s-sidebar__nav">
+
+
+            <ul>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-users">
+                        <i class="fa fa-list"></i><em>Danh Sách Nguoi Dung</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-cart">
+                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+    <div class="mainDiv">
+        <div class="cardStyle">
+            <form action="/admin/add-discount" method="post">
+                <img src="/img/logo.jpeg" id="signupLogo" />
+                <h2 class="formTitle">
+                    Tạo mã giảm giá
+                </h2>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="code">Tạo mã giảm giá</label>
+                    <input type="text" id="code" name="code" placeholder="Nhập mã giảm giá">
+                </div>
+
+                <div class="inputDiv">
+                    <label class="inputLabel" for="amount">Số lượng phiếu giảm giá</label>
+                    <input type="text" id="amount" name="amount" placeholder="Nhập số lượng mã giảm giá">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="value">Giá trị của mã giảm giá</label>
+                    <input type="text" id="value" name="value" placeholder="Nhập giá trị của mã giảm giá">
+                </div>
+                <button type="submit" class="submit">Hoàn Thành</button>
+            </form>
+        </div>
+    </div>
+
+</div>

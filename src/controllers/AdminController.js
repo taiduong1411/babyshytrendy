@@ -2,7 +2,11 @@ const express = require('express');
 const Users = require('../models/Users');
 const Products = require('../models/Products');
 const Group = require('../models/Group');
+const Discount = require('../models/Discount');
+const UserAPI = require('../API/UserAPI');
 const AdminAPI = require('../API/AdminAPI');
+const CartAPI = require('../API/CartAPI');
+const fs = require('fs-extra');
 const AdminController = {
     getAdmin: (req, res) => {
         return res.render('admin/admin_home', {
@@ -57,7 +61,6 @@ const AdminController = {
                 error: error,
                 success: success,
                 options: options,
-                username: req.session.username
             })
         }))
     },
@@ -71,7 +74,9 @@ const AdminController = {
             })
         }
         var pro_name = req.query.pro_name;
+        var user = req.query.user;
         let query = { '$or': [{ pid: { $regex: `${pro_name}`, "$options": "i" } }, { pro_name: { $regex: `${pro_name}`, "$options": "i" } }] }
+
         if (pro_name == '') {
             return res.redirect('/admin/list-product')
         }
@@ -91,13 +96,21 @@ const AdminController = {
     },
     postaddProduct: async(req, res, next) => {
         const { pid, pro_name, description, gid, newGroup, price, image, amount } = req.body;
-
+        const files = req.files;
+        if (files.length == 0) {
+            req.flash('error', 'Vui lòng nhập hình');
+            return res.redirect('/users/add-product');
+        }
         if (!pid || !pro_name || !description || !price) {
             req.flash('error', "Vui Long Nhap Day Du Thong Tin")
             return res.redirect('/admin/add-product')
         }
-        const file = req.file;
-        let imagePath = '/uploads/' + file.filename;
+        let imgList = [];
+        files.forEach(file => {
+            let path = `/uploads/${pid}/${file.filename}`;
+            imgList.push(path);
+            // ['/uploads/AD0001/product-image_328329432.png', ...]
+        })
         var newGid = ''
         if (newGroup && !gid) {
             await Group.findOne({ name: newGroup }).then(group => {
@@ -121,28 +134,27 @@ const AdminController = {
                 }
             })
         }
-        await AdminAPI.getOne(pid)
-            .then((product) => {
-                let numPrice = "000"
-                if (!product) {
-                    var newPro = {
-                        pid: pid,
-                        gid: (gid) ? gid : newGid,
-                        pro_name: pro_name,
-                        description: description,
-                        amount: amount,
-                        price: (price + numPrice),
-                        image: imagePath,
-                    }
-                    req.flash('success', 'Nhập sản phẩm thành công')
-                    new Products(newPro).save()
-                    return res.redirect('/admin/add-product')
-                } else {
-                    req.flash('error', 'Sản phẩm đã tồn tại')
-                    let error = 'Sản phẩm đã tồn tại';
-                    return res.redirect('/admin/add-product')
-                }
-            })
+        let product = await AdminAPI.getOne(pid);
+        let numPrice = "000";
+        if (!product) {
+            var newPro = {
+                pid: pid,
+                gid: (gid) ? gid : newGid,
+                pro_name: pro_name,
+                description: description,
+                amount: amount,
+                price: (price + numPrice),
+                image: imgList,
+            }
+            req.flash('success', 'Nhập sản phẩm thành công')
+            await AdminAPI.Create(newPro)
+            return res.redirect('/admin/add-product')
+        } else {
+            req.flash('error', 'Sản phẩm đã tồn tại')
+            let error = 'Sản phẩm đã tồn tại';
+            return res.redirect('/admin/add-product')
+        }
+
     },
     getDashboard: (req, res) => {
         return res.render('admin/admin_home')
@@ -151,14 +163,48 @@ const AdminController = {
         let error = req.flash('error') || ""
         let success = req.flash('success') || ""
         const { _id } = req.body;
-        let users = await AdminAPI.getUser({ sort: -1 })
-            // console.log(users)
+        let users = await (await AdminAPI.getUser({ sort: -1 }));
+        //lay phan tu tu 1->length
+        let users_shift = users.shift();
         return res.render('admin/list-users', {
             listUsers: users,
             username: req.session.username,
             error: error,
             success: success
         })
+    },
+    getAdminHome: (req, res) => {
+        return res.redirect('/admin/admin_home');
+    },
+    getDiscount: (req, res) => {
+        return res.render('admin/add-discount', {
+            username: req.session.username
+        });
+    },
+    postDiscount: async(req, res, next) => {
+        const { code, amount, value } = req.body;
+        await Discount.findOne({ code: code }).then(discount => {
+            if (!discount) {
+                var newDiscount = {
+                    code: code,
+                    amount: amount,
+                    value: value
+                }
+                Discount(newDiscount).save();
+                return res.redirect('/admin/admin_home')
+            } else {
+                return res.redirect('/admin/add-discount')
+            }
+        })
+    },
+    getlistCart: async(req, res, next) => {
+        let carts = await CartAPI.getAll({ sort: -1 });
+        // let carts_data = await carts.filter(carts_data => carts_data.email == req.session.email);
+        return res.render('admin/list-cart', {
+            username: req.session.username,
+            cartList: carts
+        });
+
     }
 }
 

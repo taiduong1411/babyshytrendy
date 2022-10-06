@@ -49,7 +49,8 @@
                     <div class="mt-2 ml-2">Giá: {{price}}</div>
 
                     <button class="text-center submit-cart mt-3">
-                        <a class="text-decoration-none" href="#">Mua Ngay <i class="fa fa-shopping-cart"></i></a>
+                        <a class="text-decoration-none" href="/product/{{slug}}">Mua Ngay <i
+                                class="fa fa-shopping-cart"></i></a>
                     </button>
                 </div>
             </div>
@@ -64,7 +65,6 @@
                     <li class="{{displayPrev}}"><a href="/home?page={{prev}}" class="prev">
                             <i class="fa fa-arrow-left"> </i></a>
                     </li>
-
                     {{{pages}}}
                     {{!-- <li class="pageNumber active"><a href="/home">1</a></li>
                     <li class="pageNumber"><a href="/home?page=2">2</a></li>

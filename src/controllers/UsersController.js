@@ -1,7 +1,8 @@
 const express = require('express');
 const Users = require('../models/Users');
 const Products = require('../models/Products');
-const Group = require('../models/Group');
+const Cart = require('../models/Cart');
+const CartAPI = require('../API/CartAPI');
 
 const UsersController = {
     getRegister: (req, res, next) => {
@@ -60,14 +61,20 @@ const UsersController = {
                 return res.redirect('/users/register')
             } else {
                 if (password == user.password) {
-                    req.session.username = user.username;
-                    req.session.image = user.image;
-                    req.session.level = user.level;
-                    user.isLogin = true;
-                    await user.save();
-                    return res.redirect('/home')
+                    if (user.isLogin == true && user.level == 'admin') {
+                        req.flash('error', 'Admin da dang nhap')
+                        return res.redirect('/users/login')
+                    } else {
+                        req.session.username = user.username;
+                        req.session.email = user.email;
+                        req.session.image = user.image;
+                        req.session.level = user.level;
+                        user.isLogin = true;
+                        await user.save();
+                        return res.redirect('/home')
+                    }
                 } else {
-                    return res.render('login')
+                    return res.redirect('/users/login')
                 }
             }
         })
@@ -91,7 +98,7 @@ const UsersController = {
         })
     },
     postchangePassword: (req, res, next) => {
-        const { username, password } = req.body;
+        const { password } = req.body;
         Users.findOne({ username: req.session.username }).then((users) => {
             if (!users) {
                 return res.redirect('/users/login')
@@ -148,7 +155,7 @@ const UsersController = {
                         pro_name: products.pro_name,
                         description: products.description,
                         price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                        image: products.image,
+                        image: products.image[0],
                         slug: products.slug,
                         gid: products.gid
                     }
@@ -187,7 +194,7 @@ const UsersController = {
                                     pro_name: products.pro_name,
                                     description: products.description,
                                     price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                                    image: products.image,
+                                    image: products.image[0],
                                     slug: products.slug,
                                     gid: products.gid
                                 }
@@ -209,7 +216,16 @@ const UsersController = {
                 // console.log(data)
 
             })
-    }
+    },
+    getCart: async(req, res, next) => {
+        let carts = await CartAPI.getAll({ sort: -1 });
+        let carts_data = await carts.filter(carts_data => carts_data.email == req.session.email);
+        return res.render('users/cart', {
+            header: true,
+            login_icon: (req.session.username) ? false : true,
+            cartList: carts_data,
+        });
+    },
 }
 
 module.exports = UsersController;

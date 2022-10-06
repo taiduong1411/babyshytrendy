@@ -35,6 +35,11 @@
                     </a>
                 </li>
                 <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-cart">
+                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
                     <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
                         <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
                     </a>
@@ -101,7 +106,7 @@
                 <div class="inputDiv">
                     <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
                     <input style="height:50px; padding: 10px;" type="file" id="image" name="image"
-                        placeholder="Nhập hình ảnh sản phẩm">
+                        placeholder="Nhập hình ảnh sản phẩm" multiple>
                 </div>
                 <button type="submit" class="submit">Hoàn Thành </button>
                 <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"

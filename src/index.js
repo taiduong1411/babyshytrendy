@@ -13,12 +13,18 @@ const database = require('./config/database');
 const Users = require('./models/Users');
 const Products = require('./models/Products');
 const Group = require('./models/Group');
+const Cart = require('./models/Cart');
+const Discount = require('./models/Discount');
 // Routers
 const UsersRouter = require('./routers/UsersRouter');
 const ProductsRouter = require('./routers/ProductsRouter');
 const AdminRouter = require('./routers/AdminRouter');
+const CartRouter = require('./routers/CartRouter');
 // APIs
 const AdminAPI = require('./API/AdminAPI');
+const UserAPI = require('./API/UserAPI');
+const ProductAPI = require('./API/ProductAPI');
+const CartAPI = require('./API/CartAPI');
 const port = process.env.PORT || 3000;
 database.connect();
 //  config
@@ -35,7 +41,7 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(cookieParser('ddn'));
-app.use(session({ cookie: { maxAge: 30000000 } }));
+app.use(session({ cookie: { maxAge: (1000 * 60 * 40) } }));
 
 app.use(flash());
 
@@ -81,7 +87,7 @@ app.get('/home', async(req, res) => {
                     pid: products.pid,
                     pro_name: products.pro_name,
                     price: (products.price).toLocaleString('it-IT', { style: 'currency', currency: 'VND' }),
-                    image: products.image,
+                    image: products.image[0],
                     slug: products.slug
                 }
             });
@@ -104,6 +110,7 @@ app.get('/home', async(req, res) => {
         })
 });
 app.use('/users', UsersRouter);
+app.use('/users', CartRouter);
 app.use('/product', ProductsRouter);
 app.use('/admin', AdminRouter);
 app.get('/', (req, res) => {

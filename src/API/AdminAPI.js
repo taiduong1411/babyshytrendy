@@ -3,13 +3,19 @@ const Users = require('../models/Users');
 const AdminAPI = {
     getOne: async(options) => {
         if (options.pid) {
-            return await Products.findOne({ pid: pid }).lean()
+            return await Products.findOne({ pid: options.pid }).lean()
                 .then(product => {
                     return product
                 })
         }
         if (options.id) {
-            return await Products.findOne({ _id: _id }).lean()
+            return await Products.findOne({ _id: options._id }).lean()
+                .then(product => {
+                    return product
+                })
+        }
+        if (options.slug) {
+            return await Products.findOne({ slug: options.slug }).lean()
                 .then(product => {
                     return product
                 })
@@ -33,7 +39,7 @@ const AdminAPI = {
                         description: products.description,
                         price: (products.price).toLocaleString('it-IT', { style: "currency", currency: "VND" }),
                         amount: products.amount,
-                        image: products.image,
+                        image: products.image[0],
                         gid: products.gid,
                         slug: products.slug
                     }
@@ -68,7 +74,9 @@ const AdminAPI = {
             // })
 
     },
-    // create,
+    Create: async(data) => {
+        return await new Products(data).save();
+    },
     delete: async(idUrl) => {
         return await Products.findByIdAndDelete(idUrl).lean();
     },

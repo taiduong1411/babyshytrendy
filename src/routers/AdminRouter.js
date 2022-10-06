@@ -12,9 +12,12 @@ router.get('/add-product', check_Admin_account, AdminController.getaddProduct);
 router.get('/dashboard', check_Admin_account, AdminController.getDashboard);
 router.get('/search', check_Admin_account, AdminController.getAdminSearch);
 router.get('/list-users', check_Admin_account, AdminController.getUserList);
+router.get('/add-discount', check_Admin_account, AdminController.getDiscount);
+router.get('/list-cart', check_Admin_account, AdminController.getlistCart);
+router.get('/', check_Admin_account, AdminController.getAdminHome);
 
 
-router.post('/add-product', upload.single('image'), AdminController.postaddProduct);
-
+router.post('/add-product', upload.array('image', 10), AdminController.postaddProduct);
+router.post('/add-discount', AdminController.postDiscount);
 
 module.exports = router;
