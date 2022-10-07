@@ -7,6 +7,7 @@ const UserAPI = require('../API/UserAPI');
 const AdminAPI = require('../API/AdminAPI');
 const CartAPI = require('../API/CartAPI');
 const fs = require('fs-extra');
+const Cart = require('../models/Cart');
 const AdminController = {
     getAdmin: (req, res) => {
         return res.render('admin/admin_home', {
@@ -198,12 +199,46 @@ const AdminController = {
         })
     },
     getlistCart: async(req, res, next) => {
-        let carts = await CartAPI.getAll({ sort: -1 });
-        // let carts_data = await carts.filter(carts_data => carts_data.email == req.session.email);
+        let error = req.flash('error' || '');
+        let success = req.flash('success' || '');
+        let carts = await CartAPI.getAll({ sort: 1 });
         return res.render('admin/list-cart', {
             username: req.session.username,
-            cartList: carts
+            cartList: carts,
+            status: (carts.status) ? true : false,
+            success: success,
+            error: error
         });
+
+    },
+    getConfirmCart: async(req, res, next) => {
+        const idUrl = req.params.id;
+        let cart_db = await Cart.findOne({ _id: idUrl })
+        let product_db = await AdminAPI.getOne({ slug: cart_db.slug });
+        // console.log(product_db);
+        // console.log(idUrl);
+        // console.log(cart_db);
+        let cart_amount = cart_db.amount;
+        let product_amount = product_db.amount;
+        if (cart_amount > product_amount) {
+            req.flash('error', 'Sản phẩm trong kho không đủ !!! Vui lòng liên hệ người mua ')
+            return res.redirect('/admin/list-cart')
+        }
+        let amount_update = (product_amount - cart_amount);
+        // console.log(typeof(amount_update));
+        let id = (product_db._id).toString();
+        let product = await Products.findByIdAndUpdate(id, { amount: amount_update });
+        let cart = await Cart.findByIdAndUpdate(idUrl, { status: true })
+            .then(() => {
+                req.flash('success', 'Xác nhận đơn hàng thành công');
+                return res.redirect('/admin/list-cart');
+            }).catch(() => {
+                req.flash('error', 'Xác nhận đơn hàng thất bại')
+                return res.redirect('/admin/list-cart');
+            })
+            // console.log(cart);
+            // return res.redirect('/admin/list-cart');
+
 
     }
 }

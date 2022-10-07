@@ -14,6 +14,7 @@ router.get('/search', check_Admin_account, AdminController.getAdminSearch);
 router.get('/list-users', check_Admin_account, AdminController.getUserList);
 router.get('/add-discount', check_Admin_account, AdminController.getDiscount);
 router.get('/list-cart', check_Admin_account, AdminController.getlistCart);
+router.get('/confirm-cart/:id', check_Admin_account, AdminController.getConfirmCart);
 router.get('/', check_Admin_account, AdminController.getAdminHome);
 
 

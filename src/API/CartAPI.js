@@ -20,6 +20,12 @@ const CartAPI = {
                     return cart
                 })
         }
+        if (options.id) {
+            return await Cart.findOne({ id: options.id }).lean()
+                .then(cart => {
+                    return cart
+                })
+        }
     },
     getAll: async(options) => {
         let sort = options.sort || 1;
@@ -33,6 +39,7 @@ const CartAPI = {
             .then(carts => {
                 return carts.map(carts => {
                     return {
+                        id: (carts._id).toString(),
                         pid: carts.pid,
                         pro_name: carts.pro_name,
                         image: carts.image,
@@ -40,7 +47,7 @@ const CartAPI = {
                         amount: carts.amount,
                         email: carts.email,
                         slug: carts.slug,
-                        status: (carts.status) ? `<span class="btn btn-success" style="width: 150px">Đã Xác Nhận</span>` : `<span class="btn btn-danger" style="width: 150px">Chờ Xác Nhận</span>`
+                        status: (carts.status) ? `<span class="btn btn-success btn-status" style="width: 150px">Đã Xác Nhận</span>` : `<span class="btn btn-danger btn-status" style="width: 150px">Chờ Xác Nhận</span>`
                     }
                 })
             })
