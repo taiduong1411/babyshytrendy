@@ -7,10 +7,10 @@ const DiscountModel = new Schema({
         unique: true
     },
     amount: {
-        type: String
+        type: Number
     },
     value: {
-        type: String
+        type: Number
     }
 }, {
     timestamps: true

@@ -33,7 +33,7 @@ const AdminAPI = {
             .then(products => {
                 return products.map(products => {
                     return {
-                        id: products._id,
+                        id: (products._id).toString(),
                         pid: products.pid,
                         pro_name: products.pro_name,
                         description: products.description,
@@ -41,7 +41,8 @@ const AdminAPI = {
                         amount: products.amount,
                         image: products.image[0],
                         gid: products.gid,
-                        slug: products.slug
+                        slug: products.slug,
+                        createdAt: (products.createdAt).toLocaleString('en-GB')
                     }
                 })
             })
@@ -101,6 +102,15 @@ const AdminAPI = {
                 })
             })
     },
-    // update,
+    getFindbyDate: async(date) => {
+            let products = await Products.find({
+                createdAt: {
+                    $gte: new Date(new Date(date).setHours(00, 00, 00)),
+                    $lt: new Date(new Date(date).setHours(23, 59, 59))
+                }
+            })
+            return products
+        }
+        // update,
 }
 module.exports = AdminAPI;

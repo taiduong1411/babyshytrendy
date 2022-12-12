@@ -1,0 +1,139 @@
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
+            <i class="fa fa-bars"></i>
+        </a> --}}
+
+        <nav class="s-sidebar__nav">
+
+
+            <ul>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-users">
+                        <i class="fa fa-list"></i><em>Danh Sách Nguoi Dung</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-cart">
+                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <div class="mainDiv">
+        <div class="cardStyle">
+            <form class="form_addProduct" style="position: relative;" action="/admin/edit-product/{{data.id}}"
+                method="post">
+                {{!-- <img src="/img/logo.jpeg" id="signupLogo" /> --}}
+                <h2 class="formTitle">
+                    Chỉnh Sửa Sản Phẩm
+                </h2>
+                {{#if error}}
+                <div id="error" style="width: 400px; margin:auto;" class="mt-5 alert alert-danger text-center">{{error}}
+                </div>
+                {{/if}}
+                {{#if success}}
+                <div id="success" style="width: 400px; margin:auto;" class="mt-5 alert alert-success text-center">
+                    {{success}}</div>
+                {{/if}}
+
+                <div class="inputDiv">
+                    <label class="inputLabel" for="gid">ID San Pham</label>
+                    <input type="text" id="pid" name="pid" value="{{data.pid}}">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="pro_name">Tên Sản Phẩm</label>
+                    <input type="text" id="pro_name" name="pro_name" value="{{data.pro_name}}">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="description">Mô tả</label>
+                    <textarea class="p-2" type="text" id="description" name="description"
+                        placeholder="{{data.description}}"></textarea>
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="price">Giá sản phẩm</label>
+                    <input type="text" id="price" name="price" value="{{data.price}}">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="amount">Số lượng sản phẩm</label>
+                    <input type="text" id="amount" name="amount" value="{{data.amount}}">
+                </div>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
+                </div>
+                {{#each data.image}}
+                <div style="width: 100px; height: 100px; display: flex; margin-left: 450px">
+                    <img src="{{this}}" alt="{{this}}">
+                    <input type="hidden" value="{{this}}">
+                    <button class="btn btn-danger mt-2 ml-3"><i class="fa fa-trash"></i></button>
+                </div>
+                {{/each}}
+                <button type="submit" class="submit">Hoàn Thành </button>
+                <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"
+                    class="loader"></div>
+            </form>
+        </div>
+    </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function () {
+        $('#selector').on('change', function () {
+            if ($(this).val() === "") {
+                $("#newGroup").show();
+            }
+            else {
+                $("#newGroup").hide();
+            }
+        });
+        $('select#selector').change(function () {
+            let gid = $(this).children(':selected').val();
+
+            $('#pid').val(gid)
+
+        });
+        $('.loader').hide();
+        $('.submit').click(function (e) {
+            $('.loader').show();
+            setTimeout(function () {
+                $('.loader').hide();
+            }, 700)
+        })
+        setTimeout(function () {
+            $('#error').fadeOut('slow')
+            $('#success').fadeOut('slow')
+        }, 2000)
+    })
+</script>

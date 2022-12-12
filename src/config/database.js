@@ -11,3 +11,6 @@ async function connect() {
     }
 };
 module.exports = { connect };
+
+
+// connect mongo Atlat: mongodb+srv://admin:taiduong1411@babyshytrendy.vtake6m.mongodb.net/babyshytrendy

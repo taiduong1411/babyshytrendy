@@ -60,11 +60,10 @@
                 <thead>
 
                     <tr>
-                        <th scope="col">PID</th>
-                        <th scope="col">Sản phẩm</th>
-                        <th scope="col">Số lượng</th>
-                        <th scope="col">Giá</th>
-                        <th scope="col">Email</th>
+                        <th scope="col">Mã đơn hàng</th>
+                        <th scope="col">Thông tin khách hàng</th>
+                        <th scope="col">Thông tin đơn hàng</th>
+                        <th scope="col">Tổng giá</th>
                         <th scope="col">Trạng thái đơn hàng</th>
                     </tr>
 
@@ -72,25 +71,25 @@
                 <tbody>
                     {{#each cartList}}
                     <tr>
-                        <th scope="row">{{pid}}</th>
-                        <td>
-                            <img style="width: 35px; height:35px;" src="{{image}}" alt="{{image}}">
-                            {{pro_name}}
-                        </td>
-                        <td>
-                            <span>{{amount}}</span>
-                        </td>
-                        <td>{{price}}</td>
-                        <td>{{email}}</td>
+                        <th scope="row">{{code_order}}
+                        </th>
 
+                        <td>
+                            {{c_name}}
+                        </td>
+                        <td>
+                            {{#with pOrder}}
+                            {{pro_name}} {{amount}}
+                            {{/with}}
+                        </td>
+
+                        <td>{{total_price}}</td>
                         <td>
                             {{{status}}}
                         </td>
                         <td>
-                            {{#if status}}
-                            <a href="/admin/confirm-cart/{{id}}" class="btn btn-success btn-confirm-cart"><i
+                            <a href="/admin/confirm-cart/{{code_order}}" class="btn btn-success btn-confirm-cart"><i
                                     class="fa fa-check" aria-hidden="true"></i></a>
-                            {{/if}}
                         </td>
                     </tr>
                     {{/each}}

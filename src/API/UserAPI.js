@@ -8,9 +8,12 @@ const UserAPI = {
             return await Users.findOne({ username: options.username }).lean()
                 .then(user => {
                     return {
+                        id: (user._id).toString(),
                         email: user.email,
                         phone: user.phone,
-                        address: user.address
+                        address: user.address,
+                        cart: user.cart,
+                        cart_history: user.cart_history,
                     }
                 })
         }

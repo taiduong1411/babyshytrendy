@@ -1,7 +1,7 @@
 const express = require('express');
-const CartAPI = require('../API/CartAPI');
+const OrderAPI = require('../API/OrderAPI');
 const UserAPI = require('../API/UserAPI');
-const Cart = require('../models/Cart');
+const Order = require('../models/Order');
 const Users = require('../models/Users');
 
 const CartController = {

@@ -13,8 +13,9 @@ const database = require('./config/database');
 const Users = require('./models/Users');
 const Products = require('./models/Products');
 const Group = require('./models/Group');
-const Cart = require('./models/Cart');
+const Order = require('./models/Order');
 const Discount = require('./models/Discount');
+const Comment = require('./models/Comments');
 // Routers
 const UsersRouter = require('./routers/UsersRouter');
 const ProductsRouter = require('./routers/ProductsRouter');
@@ -24,7 +25,7 @@ const CartRouter = require('./routers/CartRouter');
 const AdminAPI = require('./API/AdminAPI');
 const UserAPI = require('./API/UserAPI');
 const ProductAPI = require('./API/ProductAPI');
-const CartAPI = require('./API/CartAPI');
+const OrderAPI = require('./API/OrderAPI');
 const port = process.env.PORT || 3000;
 database.connect();
 //  config
@@ -49,8 +50,14 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.set('views', path.join(__dirname, 'views'));
 
 // config end
+Users.find().then(users => {
+    users.forEach(user => {
+        user.isLogin = false;
+        user.save();
+    })
+})
 
-app.get('/home', async(req, res) => {
+app.get('/home', async(req, res, next) => {
     const page = parseInt(req.query.page) || 1;
     const nProducts = 4;
     const skip = nProducts * (page - 1); // 0 4 8 12 16
@@ -58,8 +65,7 @@ app.get('/home', async(req, res) => {
     const total = await Products.countDocuments()
         .then(count => {
             return count;
-        }) // 6
-
+        }); // 6
     let n = Math.ceil(total / nProducts); // 2 trang
     let html = '';
     for (let i = 1; i <= n; i++) {
@@ -70,6 +76,8 @@ app.get('/home', async(req, res) => {
         }
 
     }
+
+
     Products.find({})
         .sort({ createdAt: -1 })
         .limit(nProducts)
@@ -91,7 +99,6 @@ app.get('/home', async(req, res) => {
                     slug: products.slug
                 }
             });
-
             return res.render('home', {
                 header: true,
                 newCollection: true,
@@ -105,14 +112,42 @@ app.get('/home', async(req, res) => {
                 prev: page - 1,
                 pages: html,
                 displayPrev: (page == 1) ? 'd-none' : '',
-                displayNext: (page == n) ? 'd-none' : ''
+                displayNext: (page == n) ? 'd-none' : '',
+                // amountCart: a
             })
         })
+        // var user = UserAPI.getOne({ username: req.session.username }).then(user => {
+        //     if (!user) {
+        //         var amountCart = 0
+        //     } else {
+        //         var a = user.cart.length.toString()
+        //         return res.render('home', {
+        //             amountCart: a
+        //         })
+        //     }
+        // })
 });
+app.post('/check-discount', async(req, res, next) => {
+    const code = req.body.code;
+    await Discount.findOne({ code: code })
+        .then(discount => {
+            if (!discount) {
+                return res.send({ value: 1 });
+            } else {
+                if (discount.amount == 0) {
+                    // return res.send({ err: 'Mã khuyến mãi đã hết hạn' });
+                    return res.send({ value: 1 });
+                }
+
+            }
+            return res.send({ value: discount.value });
+        })
+})
 app.use('/users', UsersRouter);
 app.use('/users', CartRouter);
 app.use('/product', ProductsRouter);
 app.use('/admin', AdminRouter);
+app.use('/account', UsersRouter)
 app.get('/', (req, res) => {
     return res.redirect('/home');
 })

@@ -63,12 +63,12 @@
                         <th scope="col">Tên Sản Phẩm</th>
                         <th scope="col">Giá Sản Phẩm</th>
                         <th scope="col">Số Lượng</th>
+                        <th scope="col">Ngày Nhập</th>
                     </tr>
                 </thead>
                 <tbody>
                     {{#each listProduct}}
                     <tr>
-
                         <th scope="row">{{pid}}</th>
                         <td>
                             <img style="width: 35px; height:35px;" src="{{image}}" alt="{{image}}">
@@ -78,6 +78,9 @@
                         <td>
                             <span class="btn btn-success">{{amount}}</span>
                         </td>
+                        <td>
+                            {{createdAt}}
+                        </td>
                         <td style="width: 120px;">
                             <button class="btn btn-danger btn-delete" value="[{{pid}}] {{pro_name}}" type="button"
                                 data-toggle="modal" data-target="#exampleModal"><i class="fa fa-trash"></i>
@@ -85,9 +88,9 @@
                                     {{id}}
                                 </span>
                             </button>
+                            <a href="/admin/edit-product/{{id}}" class="conf-edit btn btn-success"><i
+                                    class="fa fa-edit"></i></a>
 
-
-                            <a href="/admin/edit-product" class="btn btn-success"><i class="fa fa-edit"></i></a>
                         </td>
                     </tr>
 
@@ -159,6 +162,5 @@
             $('.conf-delete').attr('href', `/admin/delete-product/${id}`)
             $(".text_pro_name").html(btn_delete);
         });
-
     })
 </script>

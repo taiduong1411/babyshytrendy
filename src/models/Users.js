@@ -33,6 +33,19 @@ const UsersModel = new Schema({
     isLogin: {
         type: Boolean,
         default: false
+    },
+    cart: {
+        type: [{
+            pid: String,
+            image: String,
+            amount: Number,
+            pro_name: String,
+            total: Number,
+            slug: String
+        }]
+    },
+    cart_history: {
+        type: [String]
     }
 });
 

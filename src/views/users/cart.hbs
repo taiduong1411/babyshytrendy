@@ -1,13 +1,11 @@
-<div class="s-layout__content">
-    <table class="table ml-3 mr-3">
+<div class="s-layout__content" style="height:500px;width:100%;font:16px Arial, Serif;overflow:auto;">
+    <table class="table ml-3 mr-3" id="table">
         <thead>
             <tr>
                 <th scope="col">STT</th>
                 <th scope="col">Sản phẩm</th>
                 <th scope="col">Số lượng</th>
                 <th scope="col">Giá</th>
-                <th scope="col">Email</th>
-                <th scope="col">Trạng thái đơn hàng</th>
             </tr>
         </thead>
         <tbody>
@@ -21,14 +19,109 @@
                 <td>
                     <span class="ml-4">{{amount}}</span>
                 </td>
-                <td>{{price}}</td>
-                <td>{{email}}</td>
-
-                <td>
-                    {{{status}}}
-                </td>
+                <td class="price">{{total}}</td>
+                <td><span class="btn btn-delete"><a href="/users/delete-cart/{{pid}}"><i class="fa fa-trash"
+                                style="color: red; font-size: 18px"></i></a></span></td>
             </tr>
             {{/each}}
         </tbody>
+        <tfoot>
+            <tr class="d-none">
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+                <td><input type="text"></td>
+            </tr>
+        </tfoot>
     </table>
+
+    <div style="position: absolute; right: 0; margin-top: 350px; margin-right: 50px">
+        <form action="/users/cart" method="POST">
+            {{#if discount}}
+            <div class="mt-3 discount" style="margin-bottom: 50px;">
+                <input type="text" name="code" id="code" placeholder="Nhập mã khuyến mãi">
+                <button class="btn btn-discount" style="background-color: var(--color-main); ">Xác
+                    nhận</button>
+                <button class="btn btn-discount-cancel d-none btn-danger" onclick="window.location.href='/users/cart'"
+                    type="reset">Không sử
+                    dụng mã
+                    giảm
+                    giá</button>
+
+
+            </div>
+            {{/if}}
+            <span>Tổng Cộng: &nbsp; <strong class="total_price" style="font-size: 20px;"></strong> </span>
+            <input type="hidden" class="total_price_d_none" name="total_price_d_none" value="">
+            {{#if btn_confirm_buy}}
+            <div class="mt-5 confirm">
+                <button type="submit" class="btn btn-confirm"
+                    style="background-color: var(--color-main); width: 400px;">Xác
+                    nhận
+                    mua hàng</button>
+            </div>
+            {{/if}}
+        </form>
+    </div>
 </div>
+<div class="wrapper">
+    <div class="loader">
+
+    </div>
+
+    <div class="logo">
+
+    </div>
+
+
+</div>
+<script>
+    $(document).ready(function () {
+        var calculated_total_sum = 0;
+        $(".price").each(function () {
+            var price = $(this).text();
+            calculated_total_sum += parseFloat(price);
+        });
+        let total_price = calculated_total_sum
+        $(".total_price").html(total_price.toLocaleString('it-IT', { style: "currency", currency: "VND" }));
+        $(".total_price_d_none").val(total_price);
+
+        if (parseInt(total_price) == 0) {
+            $('.discount').addClass('d-none')
+            $('.confirm').addClass('d-none')
+        }
+
+    })
+    $('.btn-discount').click(function (e) {
+        e.preventDefault();
+        let code = $('#code').val()
+        if (code == '') {
+            $(".total_price").html(total_price.toLocaleString('it-IT', { style: "currency", currency: "VND" }));
+            $(".total_price_d_none").val(total_price);
+        } else {
+            $.ajax({
+                url: 'http://localhost:3000/check-discount',
+                method: 'POST',
+                data: {
+                    code
+                },
+                success: (result) => {
+                    let old_price = $('.total_price_d_none').val();
+                    if (result.value == 1) {
+                        var math = parseFloat(old_price)
+                        alert('Mã Khuyến Mãi Không Tồn Tại Hoặc Đã Hết !!!')
+                    } else {
+                        var math = (parseFloat(old_price) - parseFloat(old_price) * result.value)
+                        $('.btn-discount').addClass('d-none')
+                        $('.btn-discount-cancel').removeClass('d-none')
+                    }
+                    $('.total_price').html(math.toLocaleString('it-IT', { style: "currency", currency: "VND" }))
+                    $(".total_price_d_none").val(math);
+                }
+            })
+        }
+    })
+    setTimeout(function () {
+        $('.wrapper').fadeOut();
+    }, 500)
+</script>

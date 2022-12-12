@@ -5,9 +5,12 @@ const Group = require('../models/Group');
 const Discount = require('../models/Discount');
 const UserAPI = require('../API/UserAPI');
 const AdminAPI = require('../API/AdminAPI');
-const CartAPI = require('../API/CartAPI');
+const OrderAPI = require('../API/OrderAPI');
 const fs = require('fs-extra');
-const Cart = require('../models/Cart');
+const Order = require('../models/Order');
+const { postOrder } = require('./UsersController');
+const Comments = require('../models/Comments');
+const ProductAPI = require('../API/ProductAPI');
 const AdminController = {
     getAdmin: (req, res) => {
         return res.render('admin/admin_home', {
@@ -35,18 +38,25 @@ const AdminController = {
             success: success
         })
     },
-    getdeleteProduct: async(req, res) => {
+    getdeleteProduct: async(req, res, next) => {
         const idUrl = req.params.id;
-        await AdminAPI.delete(idUrl)
-            .then(products => {
-                if (!products) {
-                    req.flash('error', 'Không thể xoá sản phẩm')
+        // let product = await Products.findOne({ _id: idUrl })
+        await AdminAPI.delete(idUrl).then(async product => {
+            let cmt = await Comments.findOne({ pid: product.pid })
+            if (!cmt) {
+                req.flash('success', 'xoa san pham thanh cong')
+                return res.redirect('/admin/list-product')
+            } else {
+                await Comments.findByIdAndDelete(cmt._id).then(() => {
+                    req.flash('success', 'xoa san pham thanh cong')
                     return res.redirect('/admin/list-product')
-                } else {
-                    req.flash('success', 'Xoá sản phẩm thành công')
-                    return res.redirect('/admin/list-product')
-                }
-            })
+                })
+            }
+        }).catch(error => {
+            req.flash('error', 'Không thể xoá sản phẩm')
+            return res.redirect('/admin/list-product')
+        })
+
     },
     getaddProduct: (req, res) => {
         let error = req.flash('error' || '');
@@ -82,7 +92,19 @@ const AdminController = {
             return res.redirect('/admin/list-product')
         }
         var data_name = await AdminAPI.getSearchByName(query);
-
+        var data_search = []
+        for (var i = 0; i < data_name.length; i++) {
+            var data = {
+                id: data_name[i]._id,
+                pid: data_name[i].pid,
+                amount: data_name[i].amount,
+                image: data_name[i].image[0],
+                pro_name: data_name[i].pro_name,
+                price: data_name[i].price,
+                createdAt: data_name[i].createdAt.toLocaleString('en-GB')
+            }
+            data_search.push(data)
+        }
         var result_1 = await AdminAPI.getTotal();
         var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
         if (data_name == '') {
@@ -90,7 +112,7 @@ const AdminController = {
             return res.redirect('/admin/list-product')
         } else {
             res.render('admin/list-product', {
-                listProduct: data_name,
+                listProduct: data_search,
                 totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" })
             })
         }
@@ -130,8 +152,7 @@ const AdminController = {
                         name: newGroup,
                         gid: newGid
                     }
-                    new Group(newBrand).save()
-
+                    Group(newBrand).save()
                 }
             })
         }
@@ -166,7 +187,7 @@ const AdminController = {
         const { _id } = req.body;
         let users = await (await AdminAPI.getUser({ sort: -1 }));
         //lay phan tu tu 1->length
-        let users_shift = users.shift();
+        // let users_shift = users.shift();
         return res.render('admin/list-users', {
             listUsers: users,
             username: req.session.username,
@@ -201,44 +222,61 @@ const AdminController = {
     getlistCart: async(req, res, next) => {
         let error = req.flash('error' || '');
         let success = req.flash('success' || '');
-        let carts = await CartAPI.getAll({ sort: 1 });
+        var carts = await OrderAPI.getAll({ sort: 1 })
         return res.render('admin/list-cart', {
             username: req.session.username,
             cartList: carts,
-            status: (carts.status) ? true : false,
+            // pOrder: result,
             success: success,
             error: error
         });
-
     },
     getConfirmCart: async(req, res, next) => {
-        const idUrl = req.params.id;
-        let cart_db = await Cart.findOne({ _id: idUrl })
-        let product_db = await AdminAPI.getOne({ slug: cart_db.slug });
-        // console.log(product_db);
-        // console.log(idUrl);
-        // console.log(cart_db);
-        let cart_amount = cart_db.amount;
-        let product_amount = product_db.amount;
-        if (cart_amount > product_amount) {
-            req.flash('error', 'Sản phẩm trong kho không đủ !!! Vui lòng liên hệ người mua ')
-            return res.redirect('/admin/list-cart')
+        const codeUrl = req.params.code_order;
+        let order = await Order.findOne({ code_order: codeUrl });
+        let user = await UserAPI.getOne({ username: order.c_name })
+        let code_order = order.code_order
+        let history = user.cart_history
+        history.push(code_order)
+        let id = (order._id).toString();
+        await Order.findByIdAndUpdate(id, { status: true })
+        await Users.findByIdAndUpdate(user.id, { cart_history: history })
+        return res.redirect('/admin/list-cart')
+    },
+    getEditProduct: async(req, res, next) => {
+        const idUrl = req.params.id
+        let product = await Products.findOne({ _id: idUrl })
+        let id = (product._id).toString()
+        const data = {
+            id: id,
+            pid: product.pid,
+            pro_name: product.pro_name,
+            description: product.description,
+            price: product.price / 1000,
+            amount: product.amount,
+            image: product.image
         }
-        let amount_update = (product_amount - cart_amount);
-        // console.log(typeof(amount_update));
-        let id = (product_db._id).toString();
-        let product = await Products.findByIdAndUpdate(id, { amount: amount_update });
-        let cart = await Cart.findByIdAndUpdate(idUrl, { status: true })
-            .then(() => {
-                req.flash('success', 'Xác nhận đơn hàng thành công');
-                return res.redirect('/admin/list-cart');
-            }).catch(() => {
-                req.flash('error', 'Xác nhận đơn hàng thất bại')
-                return res.redirect('/admin/list-cart');
-            })
-            // console.log(cart);
-            // return res.redirect('/admin/list-cart');
-
+        return res.render('admin/edit-product', {
+            data: data,
+            username: req.session.username
+        })
+    },
+    postEditProduct: async(req, res, next) => {
+        const { pid, pro_name, price, amount, description } = req.body;
+        const idUrl = req.params.id
+        await Products.findOne({ _id: idUrl }).then(product => {
+            if (!product) {
+                return res.redirect(`/admin/edit-product/${id}`)
+            } else {
+                product.pid = pid
+                product.pro_name = pro_name
+                product.price = price * 1000
+                product.amount = amount
+                product.description = description
+                product.save()
+                return res.redirect('/admin/list-product')
+            }
+        })
 
     }
 }

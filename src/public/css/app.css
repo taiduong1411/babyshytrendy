@@ -1,14 +1,14 @@
-/* * {
+* {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-} */
+}
 
 body {
     background-color: #f4f0f0;
     /* font-family: canada-type-gibson, sans-serif; */
     /* min-height: 300vh; */
-    /* position: relative; */
+    position: relative;
 }
 
 :root {
@@ -19,40 +19,6 @@ body {
     --color-quinary: #ee6352;
     --color-main: rgb(253, 197, 84);
 }
-
-
-/* header start */
-
-
-/* h1 {
-    color: #484848;
-    font-size: 20px;
-    font-weight: bold;
-    font-family: monospace;
-    letter-spacing: 1px;
-    cursor: pointer
-}
-
-h1 span {
-    transition: .5s linear
-}
-
-h1:hover span:nth-child(1) {
-    margin-right: 5px
-}
-
-h1:hover span:nth-child(1):after {
-    content: "";
-}
-
-h1:hover span:nth-child(2) {
-    margin-left: 5px
-}
-
-h1:hover span {
-    color: #fff;
-    text-shadow: 0 0 10px rgb(124, 124, 124), 0 0 20px #f9c8c8, 0 0 30px #f9c8c8, 0 0 40px rgb(255, 221, 28);
-} */
 
 .bg-white {
     background-color: rgb(83, 83, 83);
@@ -359,12 +325,10 @@ img {
 
 footer {
     background: var(--color-main);
-    /* background: -webkit-linear-gradient(59deg, #3A6073, #16222A);
-    background: linear-gradient(59deg, #3A6073, #16222A); */
     color: white;
-    position: absolute;
-    bottom: 0;
     width: 100%;
+    position: absolute;
+    margin-top: 500px;
 }
 
 footer a {
@@ -925,6 +889,18 @@ a {
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+}
+
+.cart {
+    position: relative;
+}
+
+.amountCart {
+    /* position: absolute; */
+    color: black;
+    padding: 2px 6px;
+    background-color: red;
+    border-radius: 50%;
 }
 
 

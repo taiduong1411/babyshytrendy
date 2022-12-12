@@ -1,0 +1,36 @@
+<div class="s-layout__content">
+    <table class="table ml-3 mr-3" id="table">
+        <thead>
+            <tr>
+                <th scope="col">Mã Đơn Hàng</th>
+                <th scope="col">Tổng giá</th>
+                <th scope="col">Trạng Thái Đơn Hàng</th>
+
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cartList_show}}
+            <tr>
+                <th scope="row">{{code_order}}</th>
+                <td class="price">{{total_price}}</td>
+                <td>
+                    {{{status}}}
+                </td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+</div>
+<script>
+    $(document).ready(function () {
+        var calculated_total_sum = 0;
+        $(".price").each(function () {
+            var abc = $(this).text();
+            calculated_total_sum += parseInt(abc);
+        });
+        let total_price = parseInt(calculated_total_sum)
+
+        $(".total_price").html(total_price);
+    })
+
+</script>

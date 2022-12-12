@@ -6,7 +6,7 @@ mongoose.plugin(slug);
 const ProductsModel = new Schema({
     pid: {
         type: String,
-        require: true
+        required: true
     },
     pro_name: {
         type: String,
@@ -20,10 +20,12 @@ const ProductsModel = new Schema({
         required: true
     },
     amount: {
-        type: Number
+        type: Number,
+        required: true
     },
     image: {
-        type: [String]
+        type: [String],
+        required: true
     },
     slug: {
         type: String,
