@@ -1,3 +1,6 @@
 git add .
 git commit -m ""
 git pull
+
+
+undo git pull : git reset --hard ORIG_HEAD 

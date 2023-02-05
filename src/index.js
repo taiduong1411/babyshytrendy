@@ -9,7 +9,8 @@ const multer = require('multer');
 const queryString = require('query-string');
 const bodyParser = require('body-parser');
 const database = require('./config/database');
-// Models
+const MongoStore = require('connect-mongo')
+    // Models
 const Users = require('./models/Users');
 const Products = require('./models/Products');
 const Group = require('./models/Group');
@@ -42,7 +43,14 @@ app.use(express.urlencoded({
     extended: true
 }));
 app.use(cookieParser('ddn'));
-app.use(session({ cookie: { maxAge: (1000 * 60 * 40) } }));
+// app.use(session({ cookie: { maxAge: (1000 * 60 * 40) } }));
+app.use(session({
+    cookie: { maxAge: (1000 * 60 * 40) },
+    secret: 'foo',
+    store: MongoStore.create({
+        mongoUrl: 'mongodb+srv://taiduong:taiduong1411@taiduong.28espap.mongodb.net/babyshytrendy?retryWrites=true&w=majority'
+    })
+}));
 
 app.use(flash());
 
