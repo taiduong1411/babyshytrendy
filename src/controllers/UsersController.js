@@ -300,7 +300,7 @@ const UsersController = {
             _id: (user._id).toString()
         }
         await Users.findByIdAndUpdate(_id, { cart: cart_update });
-        return res.redirect('/users/cart')
+        return res.redirect('/users/cart-history')
     },
     getCartHistory: async(req, res, next) => {
         let orders = await OrderAPI.getAll({ sort: -1 })
