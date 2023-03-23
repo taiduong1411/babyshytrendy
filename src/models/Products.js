@@ -6,7 +6,8 @@ mongoose.plugin(slug);
 const ProductsModel = new Schema({
     pid: {
         type: String,
-        required: true
+        required: true,
+        unique: true
     },
     pro_name: {
         type: String,
@@ -27,12 +28,17 @@ const ProductsModel = new Schema({
         type: [String],
         required: true
     },
+    agency: {
+        type: String,
+        required: true
+    },
     slug: {
         type: String,
-        slug: 'pro_name'
+        slug: 'pro_name',
     },
     gid: {
         type: String,
+        required: true
     }
 }, {
     timestamps: true

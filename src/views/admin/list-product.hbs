@@ -63,6 +63,7 @@
                         <th scope="col">Tên Sản Phẩm</th>
                         <th scope="col">Giá Sản Phẩm</th>
                         <th scope="col">Số Lượng</th>
+                        <th scope="col">Chi nhánh</th>
                         <th scope="col">Ngày Nhập</th>
                     </tr>
                 </thead>
@@ -78,6 +79,7 @@
                         <td>
                             <span class="btn btn-success">{{amount}}</span>
                         </td>
+                        <td>{{agency}}</td>
                         <td>
                             {{createdAt}}
                         </td>
@@ -93,24 +95,24 @@
 
                         </td>
                     </tr>
-
-
                     {{/each}}
-                    {{#if error}}
-                    <div id="error" style="width: 400px; margin:auto;" class="mt-5 alert alert-danger text-center">
-                        {{error}}
-                    </div>
-                    {{/if}}
-                    {{#if success}}
-                    <div id="success" style="width: 400px; margin:auto;" class="mt-5 alert alert-success text-center">
-                        {{success}}</div>
-                    {{/if}}
                 </tbody>
             </table>
         </div>
-
-        <h1 class="ml-5 mt-5">Total: &nbsp; {{totalPrice}} </h1>
+        <h1 class="ml-5 mt-5">Tổng cộng: &nbsp; {{totalPrice}} </h1>
     </div>
+</div>
+<div class="notification">
+    {{#if error}}
+    <div id="error" class="mt-2 alert alert-danger text-center">
+        {{error}}
+    </div>
+    {{/if}}
+    {{#if success}}
+    <div id="success" class="mt-2 alert alert-success text-center">
+        {{success}}
+    </div>
+    {{/if}}
 </div>
 <div class="wrapper">
     <div class="loader">
@@ -156,6 +158,9 @@
         setTimeout(function () {
             $('.wrapper').fadeOut();
         }, 500)
+        setTimeout(function () {
+            $('.notification').fadeOut()
+        }, 1500)
         $('.btn-delete').click(function () {
             var id = $(this).children('span').text().trim();
             var btn_delete = $(this).val();

@@ -1,1 +1,139 @@
-<a href="/admin/admin_home">dashboard</a>
+<div class="s-layout">
+    <!-- Sidebar -->
+    <div class="s-layout__sidebar">
+        <nav class="s-sidebar__nav">
+            <ul>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/home">
+                        <i class="fa fa-home" aria-hidden="true"></i><em>Home</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/dashboard">
+                        <i class="fa fa-tachometer" aria-hidden="true"></i><em>Dashboard</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-product">
+                        <i class="fa fa-plus"></i><em>Thêm Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-product">
+                        <i class="fa fa-list"></i><em>Danh Sách Sản Phẩm</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-users">
+                        <i class="fa fa-list"></i><em>Danh Sách Nguoi Dung</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/list-cart">
+                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-discount">
+                        <i class="fa fa-plus"></i><em>Tạo mã giảm giá</em>
+                    </a>
+                </li>
+                <li>
+                    <a style="text-align: center;" class="s-sidebar__nav-link" href="/users/logout">
+                        <em>Hi, {{username}}</em><i class="fa fa-sign-out" aria-hidden="true"></i>
+                    </a>
+                </li>
+
+            </ul>
+        </nav>
+    </div>
+
+    <!-- Content -->
+    <main class="s-layout__content">
+        <div class="dashboard-cards">
+            <div class="graph">
+                <span class="text-title">Doanh số bán hàng: </span>
+
+                <div class="choose-graph ml-3">
+                    <input type="radio" id="week" name="graph" value="week" checked>
+                    <label for="day">Tuần</label>
+                    <input type="radio" id="month" name="graph" value="month" class="ml-3">
+                    <label for="month">Tháng</label>
+                    <input type="radio" id="year" name="graph" value="year" class="ml-3">
+                    <label for="year">Năm</label>
+                </div>
+                <canvas id="myChartWeek" style="width:90%;max-width: 650px; height: 330px; margin: auto;"></canvas>
+                <canvas id="myChartMonth" style="width:90%;max-width: 650px; height: 330px; margin: auto;"></canvas>
+                <canvas id="myChartYear" style="width:90%;max-width: 650px; height: 330px; margin: auto;"></canvas>
+
+            </div>
+            <span class="text-title">Quản Lý Kho</span>
+            <div class="options-agency ml-4 mt-3">
+                <select id="agency" style="padding: 8px 4px; width:110px; border-radius: 10px;">
+                    <option value="0">Chọn Kho</option>
+                    {{#each agency}}
+                    <option value="{{agency}}">{{agency}}</option>
+                    {{/each}}
+                </select>
+            </div>
+            <div class="dashboard-card-detail d-none">
+
+            </div>
+        </div>
+
+    </main>
+</div>
+<div class="wrapper">
+    <div class="loader">
+
+    </div>
+
+    <div class="logo">
+
+    </div>
+
+
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.4/Chart.js"></script>
+<script src="/js/graph.js"></script>
+<script>
+    $(document).ready(function () {
+        setTimeout(function () {
+            $('.wrapper').fadeOut();
+        }, 500)
+
+        $('#myChartMonth').hide()
+        $('#myChartYear').hide()
+        $('#month').click(function () {
+            if ($('#month').is(':checked')) {
+                alert($('#month').val())
+                $('#myChartWeek').show()
+            } else {
+                $('#myChartWeek').hide()
+            }
+        })
+        $('#agency').on('change', function (e) {
+            var optionSelected = $("option:selected", this);
+            var valueSelected = this.value;
+            $.ajax({
+                method: "get",
+                url: "http://localhost:3000/admin/data-product",
+                data: {
+
+                },
+                success: (product) => {
+                    let result = product.filter(product => product.agency == valueSelected)
+                    let product_in_agency = result.length
+                    $('.dashboard-card-detail').removeClass('d-none')
+                    var card = `<span>Kho: ${valueSelected}</span>
+                                </br>
+                                <span>So luong san pham trong kho: ${product_in_agency}</span>
+                                </br>`
+                    $('.dashboard-card-detail').html(card)
+                }
+            })
+        });
+
+
+    })
+</script>

@@ -41,8 +41,11 @@ const AdminAPI = {
                         amount: products.amount,
                         image: products.image[0],
                         gid: products.gid,
+                        agency: products.agency,
                         slug: products.slug,
-                        createdAt: (products.createdAt).toLocaleString('en-GB')
+                        createdAt: (products.createdAt).toLocaleString('en-GB'),
+                        updatedAt: (products.updatedAt).toLocaleString('en-GB')
+
                     }
                 })
             })
@@ -59,20 +62,20 @@ const AdminAPI = {
             })
     },
     getSearchByName: async(query) => {
+        // return await Products.find({}).then(products => {
+        //         return products.filter(function(products) {
+        //             return (products.pro_name)
+        //                 .normalize('NFD')
+        //                 .replace(/[\u0300-\u036f]/g, '')
+        //                 .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+        //                 .toLowerCase().trim()
+        //                 .indexOf(pro_name.toLowerCase()
+        //                     .normalize('NFD')
+        //                     .replace(/[\u0300-\u036f]/g, '')
+        //                     .replace(/đ/g, 'd').replace(/Đ/g, 'D')) !== -1
+        //         })
+        //     })
         return await Products.find(query).lean()
-            // .then(products => {
-            //     return products.filter(function(products) {
-            //         return (products.pro_name)
-            //             .normalize('NFD')
-            //             .replace(/[\u0300-\u036f]/g, '')
-            //             .replace(/đ/g, 'd').replace(/Đ/g, 'D')
-            //             .toLowerCase().trim()
-            //             .indexOf(pro_name.toLowerCase()
-            //                 .normalize('NFD')
-            //                 .replace(/[\u0300-\u036f]/g, '')
-            //                 .replace(/đ/g, 'd').replace(/Đ/g, 'D')) !== -1
-            //     })
-            // })
 
     },
     Create: async(data) => {

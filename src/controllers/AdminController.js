@@ -1,4 +1,5 @@
 const express = require('express');
+const lodash = require('lodash')
 const Users = require('../models/Users');
 const Products = require('../models/Products');
 const Group = require('../models/Group');
@@ -8,9 +9,11 @@ const AdminAPI = require('../API/AdminAPI');
 const OrderAPI = require('../API/OrderAPI');
 const fs = require('fs-extra');
 const Order = require('../models/Order');
-const { postOrder } = require('./UsersController');
+const excelToJson = require('convert-excel-to-json');
+// const { postOrder } = require('./UsersController');
 const Comments = require('../models/Comments');
 const ProductAPI = require('../API/ProductAPI');
+const slug = require('slug');
 const AdminController = {
     getAdmin: (req, res) => {
         return res.render('admin/admin_home', {
@@ -44,11 +47,11 @@ const AdminController = {
         await AdminAPI.delete(idUrl).then(async product => {
             let cmt = await Comments.findOne({ pid: product.pid })
             if (!cmt) {
-                req.flash('success', 'xoa san pham thanh cong')
+                req.flash('success', 'Xoá sản phẩm thành công !')
                 return res.redirect('/admin/list-product')
             } else {
                 await Comments.findByIdAndDelete(cmt._id).then(() => {
-                    req.flash('success', 'xoa san pham thanh cong')
+                    req.flash('success', 'Xoá sản phẩm thành công !')
                     return res.redirect('/admin/list-product')
                 })
             }
@@ -75,6 +78,56 @@ const AdminController = {
             })
         }))
     },
+    getImportFile: async(req, res, next) => {
+        return res.send({ success: "ok" })
+    },
+    postImportFile: async(req, res, next) => {
+        let filename = req.file.filename
+        let filePath = `./src/public/uploads/${filename}`
+        const excelData = excelToJson({
+            sourceFile: filePath,
+            sheets: [{
+                // Excel Sheet Name
+                name: 'Products',
+                // Header Row -> be skipped and will not be present at our result object.
+                header: {
+                    rows: 1
+                },
+                // Mapping columns to keys
+                columnToKey: {
+                    A: 'pid',
+                    B: 'pro_name',
+                    C: 'description',
+                    D: 'price',
+                    E: 'amount',
+                    F: 'image',
+                    G: 'gid',
+                    H: 'agency'
+                }
+            }]
+        });
+        //add Slug
+        var data = excelData.Products
+        for (var i = 0; i < data.length; i++) {
+            let slug_pro = slug(data[i].pro_name)
+            data[i].slug = slug_pro
+        }
+
+        const data_update = lodash.uniqBy(data, 'pid');
+        // check duplicate Object in Array
+        const data_insert = []
+        data_update.map(x => data_insert.filter(a => a.pid == x.pid && a.pro_name == x.pro_name).length > 0 ? null : data_insert.push(x));
+        await Products.insertMany(data_insert, (err, data) => {
+            if (err) {
+                req.flash('error', 'Vui Long Kiem Tra Lai File')
+                return res.redirect('/admin/add-product')
+            } else {
+                req.flash('success', 'them san pham thanh cong')
+                return res.redirect('/admin/list-product');
+            }
+        })
+        fs.unlinkSync(filePath);
+    },
     getAdminSearch: async(req, res, next) => {
         let products = await AdminAPI.getAll({ sort: 1 })
         if (!products) {
@@ -84,45 +137,148 @@ const AdminController = {
                 posts: []
             })
         }
-        var pro_name = req.query.pro_name;
-        var user = req.query.user;
-        let query = { '$or': [{ pid: { $regex: `${pro_name}`, "$options": "i" } }, { pro_name: { $regex: `${pro_name}`, "$options": "i" } }] }
-
+        var pro_name = (req.query.pro_name).trim();
+        // generate input
+        // var pro_name = pro_name_notGen.trim()
         if (pro_name == '') {
             return res.redirect('/admin/list-product')
         }
+        var query = { '$or': [{ pid: { $regex: `${pro_name}`, "$options": "i" } }, { pro_name: { $regex: `${pro_name}`, "$options": "i" } }] }
         var data_name = await AdminAPI.getSearchByName(query);
-        var data_search = []
-        for (var i = 0; i < data_name.length; i++) {
-            var data = {
-                id: data_name[i]._id,
-                pid: data_name[i].pid,
-                amount: data_name[i].amount,
-                image: data_name[i].image[0],
-                pro_name: data_name[i].pro_name,
-                price: data_name[i].price,
-                createdAt: data_name[i].createdAt.toLocaleString('en-GB')
-            }
-            data_search.push(data)
-        }
-        var result_1 = await AdminAPI.getTotal();
-        var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
+        // tim kiem that bai
         if (data_name == '') {
-            req.flash('error', 'Khong tim thay san pham')
-            return res.redirect('/admin/list-product')
+            var data = products.filter(function(products) {
+                    return (products.pro_name)
+                        .normalize('NFD')
+                        .replace(/[\u0300-\u036f]/g, '')
+                        .replace(/đ/g, 'd').replace(/Đ/g, 'D')
+                        .toLowerCase().trim()
+                        .indexOf(pro_name.toLowerCase()
+                            .normalize('NFD')
+                            .replace(/[\u0300-\u036f]/g, '')
+                            .replace(/đ/g, 'd').replace(/Đ/g, 'D')) !== -1
+                })
+                // console.log(data)
+            if (data == '') {
+                let split = pro_name.split('')
+                var result = []
+                for (var k = 0; k < split.length; k++) {
+                    for (var e = k + 1; e < split.length; e++) {
+                        if (split.length > 3) {
+                            for (var f = 0; f < split.length; f++) {
+                                var test = split[k] + split[e] + split[f]
+                                result.push(test)
+                            }
+                        } else {
+                            if (split.length == 3) {
+                                var test = split[k] + split[e]
+                                result.push(test)
+                            } else {
+                                var test = split[k] + split[e]
+                                result.push(test)
+                            }
+                        }
+                    }
+                }
+                // console.log(result)
+                var lengthPro = []
+                for (var u = 0; u < products.length; u++) {
+                    lengthPro.push(products[u].pro_name)
+                }
+                // console.log(lengthPro)
+                var arr = []
+                for (var z = 0; z < result.length; z++) {
+                    for (var n = 0; n < lengthPro.length; n++) {
+                        if (lengthPro[n].includes(result[z]) == true) {
+                            var data_2 = lengthPro[n]
+                            arr.push(data_2)
+                        } else {
+                            // console.log('false')
+                        }
+                    }
+                }
+                // check duplicate in arr
+                const arr_2 = Array.from(new Set(arr));
+                // console.log(arr_2)
+                // find each element in arr
+                var data_name_1 = []
+                for (var m = 0; m < arr_2.length; m++) {
+                    var query = { '$or': [{ pid: { $regex: `${pro_name}`, "$options": "i" } }, { pro_name: { $regex: `${arr[m]}`, "$options": "i" } }] }
+                    var data_name_for = await AdminAPI.getSearchByName(query);
+                    data_name_1.push(data_name_for)
+                }
+                var data_name_2 = Array.from(new Set(data_name_1.flat()))
+                    // var data_name_checkDuplicate = []
+                for (var a = 0; a < data_name_2.length; a++) {
+                    for (var b = a + 1; b < data_name_2.length; b++) {
+                        if (data_name_2[a].pid == data_name_2[b].pid) {
+                            data_name_2.splice(a, 1)
+                        } else {
+                            // data_name_checkDuplicate.push(data_name_2[a].pid)
+                        }
+                    }
+                }
+                // console.log(data_name_checkDuplicate)
+                var data_search = []
+                for (var i = 0; i < data_name_2.length; i++) {
+                    var data = {
+                        id: data_name_2[i]._id,
+                        pid: data_name_2[i].pid,
+                        amount: data_name_2[i].amount,
+                        image: data_name_2[i].image[0],
+                        pro_name: data_name_2[i].pro_name,
+                        price: data_name_2[i].price,
+                        createdAt: data_name_2[i].createdAt.toLocaleString('en-GB')
+                    }
+                    data_search.push(data)
+                }
+                var result_1 = await AdminAPI.getTotal();
+                var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
+                if (data_name_2 == '') {
+                    req.flash('error', 'Không tìm thấy sản phẩm !')
+                    return res.redirect('/admin/list-product')
+                } else {
+                    res.render('admin/list-product', {
+                        listProduct: data_search,
+                        totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" })
+                    })
+                }
+            } else {
+                var result_1 = await AdminAPI.getTotal();
+                var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
+                return res.render('admin/list-product', {
+                    listProduct: data,
+                    totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" })
+                })
+            }
         } else {
-            res.render('admin/list-product', {
+            var data_search = []
+            for (var i = 0; i < data_name.length; i++) {
+                var data = {
+                    id: data_name[i]._id,
+                    pid: data_name[i].pid,
+                    amount: data_name[i].amount,
+                    image: data_name[i].image[0],
+                    pro_name: data_name[i].pro_name,
+                    price: data_name[i].price,
+                    createdAt: data_name[i].createdAt.toLocaleString('en-GB')
+                }
+                data_search.push(data)
+            }
+            var result_1 = await AdminAPI.getTotal();
+            var total = result_1.reduce(function(r, a, i) { return r + a.price * a.amount }, 0);
+            return res.render('admin/list-product', {
                 listProduct: data_search,
                 totalPrice: total.toLocaleString('it-IT', { style: "currency", currency: "VND" })
             })
         }
     },
     postaddProduct: async(req, res, next) => {
-        const { pid, pro_name, description, gid, newGroup, price, image, amount } = req.body;
+        const { pid, pro_name, description, gid, newGroup, price, amount, agency } = req.body;
         const files = req.files;
         if (files.length == 0) {
             req.flash('error', 'Vui lòng nhập hình');
-            return res.redirect('/users/add-product');
+            return res.redirect('/admin/add-product');
         }
         if (!pid || !pro_name || !description || !price) {
             req.flash('error', "Vui Long Nhap Day Du Thong Tin")
@@ -156,7 +312,8 @@ const AdminController = {
                 }
             })
         }
-        let product = await AdminAPI.getOne(pid);
+        let product = await AdminAPI.getOne({ pid: pid });
+        // console.log(product)
         let numPrice = "000";
         if (!product) {
             var newPro = {
@@ -166,6 +323,7 @@ const AdminController = {
                 description: description,
                 amount: amount,
                 price: (price + numPrice),
+                agency: agency,
                 image: imgList,
             }
             req.flash('success', 'Nhập sản phẩm thành công')
@@ -173,13 +331,62 @@ const AdminController = {
             return res.redirect('/admin/add-product')
         } else {
             req.flash('error', 'Sản phẩm đã tồn tại')
-            let error = 'Sản phẩm đã tồn tại';
             return res.redirect('/admin/add-product')
         }
-
     },
-    getDashboard: (req, res) => {
-        return res.render('admin/admin_home')
+    getDashboard: async(req, res, next) => {
+        let products = await AdminAPI.getAll({})
+        let data_agency = products.map(a => {
+                return {
+                    agency: a.agency,
+                }
+            })
+            // const uniqueArr = [...new Map(data_agency.map((obj) => [`${obj.agency}`, obj])).values()];
+        const uniqueArr = lodash.uniqBy(data_agency, 'agency');
+        return res.render('admin/dashboard', {
+            agency: uniqueArr
+        })
+    },
+    getDataWeek: async(req, res, next) => {
+        let orders = await Order.find().lean()
+        let toDay = new Date().toLocaleDateString('en-GB')
+            // let orderToday = orders.filter(order => (order.updatedAt).toLocaleDateString('en-GB') == '22/03/2023')
+            // let count_orderToday = orderToday.length
+            // console.log(orderToday)
+
+
+        function getDaysInCurrentMonth() {
+            const date = new Date();
+            return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
+        }
+        var result = getDaysInCurrentMonth();
+        var dayCurr = 20
+        var monthCurr = new Date().getMonth() + 1
+        var yearCurr = new Date().getFullYear()
+        var DayOfWeek = []
+        for (var j = dayCurr; j < dayCurr + 7; j++) {
+            if (j < result + 1) {
+                DayOfWeek.push(j + '/0' + monthCurr + '/' + yearCurr);
+            } else {
+                DayOfWeek.push((j - result) + '/0' + (monthCurr + 1) + '/' + yearCurr)
+            }
+        }
+        var data_week = []
+        var test = []
+        for (var k = 0; k < DayOfWeek.length; k++) {
+            let orderToday = orders.filter(order => (order.updatedAt).toLocaleDateString('en-GB') == DayOfWeek[k].toString() && order.status == true)
+            let count_orderToday = orderToday.length
+            let object = {
+                day: DayOfWeek[k],
+                order_total: count_orderToday
+            }
+            data_week.push(object)
+        }
+        return res.send(data_week)
+    },
+    getDataAgency: async(req, res, next) => {
+        let products = await AdminAPI.getAll({ sort: 1 })
+        return res.send(products)
     },
     getUserList: async(req, res) => {
         let error = req.flash('error') || ""
@@ -278,6 +485,11 @@ const AdminController = {
             }
         })
 
+    },
+    postEditImageProduct: async(req, res, next) => {
+        const { image } = req.body
+        const idUrl = req.params.id
+        console.log(idUrl)
     }
 }
 

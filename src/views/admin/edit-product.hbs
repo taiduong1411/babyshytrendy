@@ -91,13 +91,24 @@
                 <div class="inputDiv">
                     <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
                 </div>
-                {{#each data.image}}
-                <div style="width: 100px; height: 100px; display: flex; margin-left: 450px">
-                    <img src="{{this}}" alt="{{this}}">
-                    <input type="hidden" value="{{this}}">
-                    <button class="btn btn-danger mt-2 ml-3"><i class="fa fa-trash"></i></button>
+                <div style="width: 70%; margin: auto; height: 100px" class="images-Product">
+                    {{#each data.image}}
+                    <div class="imageProduct">
+                        <img src="{{this}}" alt="{{this}}" style="width: 80px; height: 80px;" id="img-data">
+                        <span class="deleteImage d-none">x</span>
+                    </div>
+                    <input type="hidden" value="{{this}}" class="inputHidden">
+                    {{!-- <button class="btn btn-danger mt-2 ml-3"><i class="fa fa-trash"></i></button> --}}
+                    {{/each}}
+                    <span class="addImage">
+                        +
+                    </span>
                 </div>
-                {{/each}}
+                <div class="inputDiv inputImage d-none">
+                    <label class="inputLabel" for="file">Import file Excel</label>
+                    <input style="height:50px; padding: 10px;" type="file" id="file" name="file" multiple>
+                </div>
+
                 <button type="submit" class="submit">Hoàn Thành </button>
                 <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"
                     class="loader"></div>
@@ -120,9 +131,7 @@
         });
         $('select#selector').change(function () {
             let gid = $(this).children(':selected').val();
-
             $('#pid').val(gid)
-
         });
         $('.loader').hide();
         $('.submit').click(function (e) {
@@ -135,5 +144,30 @@
             $('#error').fadeOut('slow')
             $('#success').fadeOut('slow')
         }, 2000)
+        let path = $('.images-Product').children().children('#img-data')
+        path.hover(function () {
+            $(this).siblings().removeClass('d-none')
+        }, function () {
+            $(this).siblings().addClass('d-none')
+        })
+        let path_delete = $('.images-Product').children().children('#img-data').siblings('.deleteImage')
+        path_delete.click(function () {
+            $(this).siblings('#img-data').addClass('d-none')
+            /*
+            $.ajax({
+                url: 'http://localhost:3000/check-discount',
+                method: 'post',
+                data: {
+                    file
+                },
+                success: {
+
+                }
+            })
+            */
+        })
+        $('.addImage').click(function () {
+            $('.inputImage').removeClass('d-none')
+        })
     })
 </script>

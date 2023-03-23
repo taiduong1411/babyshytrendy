@@ -1,13 +1,7 @@
 <div class="s-layout">
     <!-- Sidebar -->
     <div class="s-layout__sidebar">
-        {{!-- <a class="s-sidebar__trigger" href="/admin/admin_home">
-            <i class="fa fa-bars"></i>
-        </a> --}}
-
         <nav class="s-sidebar__nav">
-
-
             <ul>
                 <li>
                     <a class="s-sidebar__nav-link" href="/home">
@@ -52,6 +46,16 @@
     <!-- Content -->
     <div class="mainDiv">
         <div class="cardStyle">
+            <div class="import-method" style="float: right; width: 200px;">
+                <div style="height: 40px; width: 20px; display: inline;">
+                    <input type="checkbox" id="check" name="check" style="vertical-align: middle;">
+                    <span style="display: inline-block;">
+                        Import from file Excel
+                    </span>
+                </div>
+            </div>
+            <br>
+            <br>
             <form class="form_addProduct" style="position: relative;" action="/admin/add-product" method="post"
                 enctype="multipart/form-data">
                 {{!-- <img src="/img/logo.jpeg" id="signupLogo" /> --}}
@@ -100,6 +104,10 @@
                     <input type="text" id="price" name="price" placeholder="Nhập giá sản phẩm">
                 </div>
                 <div class="inputDiv">
+                    <label class="inputLabel" for="price">Kho</label>
+                    <input type="text" id="agency" name="agency" placeholder="Nhập kho sản phẩm">
+                </div>
+                <div class="inputDiv">
                     <label class="inputLabel" for="amount">Số lượng sản phẩm</label>
                     <input type="text" id="amount" name="amount" placeholder="Nhập số lượng sản phẩm">
                 </div>
@@ -112,9 +120,20 @@
                 <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"
                     class="loader"></div>
             </form>
+            <form class="form_addProduct_byFile d-none" style="position: relative;" action="/admin/import-file"
+                method="post" enctype="multipart/form-data">
+                <h2 class="formTitle">
+                    Nhập Sản Phẩm
+                </h2>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="file">Import file Excel</label>
+                    <input style="height:50px; padding: 10px;" type="file" id="file" name="file">
+                </div>
+                <button type="submit" class="btn btn-success" style="float: right; margin: 30px 30px 30px 30px;">Hoàn
+                    Thành</button>
+            </form>
         </div>
     </div>
-
 
 </div>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
@@ -141,6 +160,15 @@
                 $('.loader').hide();
             }, 700)
         })
+        $('#check').click(function () {
+            if ($('#check').is(':checked')) {
+                $('.form_addProduct').addClass('d-none')
+                $('.form_addProduct_byFile').removeClass('d-none')
+            } else {
+                $('.form_addProduct').removeClass('d-none')
+                $('.form_addProduct_byFile').addClass('d-none')
+            }
+        });
         setTimeout(function () {
             $('#error').fadeOut('slow')
             $('#success').fadeOut('slow')

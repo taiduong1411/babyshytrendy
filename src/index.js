@@ -8,7 +8,11 @@ const session = require('express-session');
 const multer = require('multer');
 const queryString = require('query-string');
 const bodyParser = require('body-parser');
+const compression = require('compression')
+const excelToJson = require('convert-excel-to-json');
 const database = require('./config/database');
+const os = require('os')
+require('dotenv').config();
 const MongoStore = require('connect-mongo')
     // Models
 const Users = require('./models/Users');
@@ -27,7 +31,7 @@ const AdminAPI = require('./API/AdminAPI');
 const UserAPI = require('./API/UserAPI');
 const ProductAPI = require('./API/ProductAPI');
 const OrderAPI = require('./API/OrderAPI');
-const port = process.env.PORT || 3000;
+const port = process.env.PORT;
 database.connect();
 //  config
 app.set('view engine', 'hbs');
@@ -38,6 +42,8 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({
     extended: true
 }));
+app.use(compression())
+process.env.UV_THREADPOOL_SIZE = os.cpus().length
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
@@ -163,4 +169,5 @@ app.get('/', (req, res) => {
 // localhost
 app.listen(port, () => {
     console.log(`Server is running on ${port}`)
+        // console.log(os.cpus().length)
 })

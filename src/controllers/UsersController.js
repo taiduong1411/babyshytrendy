@@ -168,6 +168,7 @@ const UsersController = {
                 if (pro_name == '') {
                     return res.redirect('/home')
                 }
+                // console.log(products)
                 var data = posts.filter(function(products) {
                     return (products.pro_name)
                         .normalize('NFD')
