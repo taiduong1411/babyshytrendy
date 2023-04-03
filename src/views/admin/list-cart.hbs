@@ -49,60 +49,51 @@
     <!-- Content -->
     <div class="s-layout__content">
         <h1 style="text-align:center;" class="mt-3 mb-5">Danh Sách Đơn Hàng</h1>
-        <form style="width: 300px; margin-left:auto;" action="/admin/search" method="get">
+        <form style="width: 300px; margin-left:auto;">
             <div class="form-group has-search">
                 <span class="fa fa-search form-control-feedback"></span>
                 <input id="search" name="pro_name" type="text" class="form-control" placeholder="Search">
             </div>
         </form>
-        <div style="height:500px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow:auto;">
+        <div style="height:900px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow:hidden;">
             <table class="table ml-3 mr-3">
                 <thead>
-
                     <tr>
-                        <th scope="col">Mã đơn hàng</th>
-                        <th scope="col">Thông tin khách hàng</th>
-                        <th scope="col">Thông tin đơn hàng</th>
-                        <th scope="col">Tổng giá</th>
-                        <th scope="col">Trạng thái đơn hàng</th>
+                        <th scope="col" style="text-align: center;">Mã đơn hàng</th>
+                        <th scope="col" style="text-align: center;">Thông tin khách hàng</th>
+                        <th scope="col" style="text-align: center;">Thông tin đơn hàng</th>
+                        <th scope="col" style="text-align: center;">Tổng giá</th>
+                        <th scope="col" style="text-align: center;">Trạng thái đơn hàng</th>
                     </tr>
-
                 </thead>
-                <tbody>
+                <tbody class="bodyTable">
                     {{#each cartList}}
                     <tr>
-                        <th scope="row">{{code_order}}
-                        </th>
+                        <td id="code_order" style="text-align: center;"><strong>{{code_order}}</strong>
+                        </td>
 
-                        <td>
+                        <td style="text-align: center;">
                             {{c_name}}
                         </td>
-                        <td>
-                            {{#with pOrder}}
-                            {{pro_name}} {{amount}}
-                            {{/with}}
+                        <td style="text-align: center;">
+                            {{#each this.pOrder}}
+                            <div>[{{pid}}] {{pro_name}}</div>
+                            <div>Số lượng: <strong>{{amount}}</strong></div>
+                            {{/each}}
                         </td>
 
-                        <td>{{total_price}}</td>
-                        <td>
+                        <td style="text-align: center;">{{total_price}}</td>
+                        <td id="status" style="text-align: center;">
+                            {{!-- <button class="btn btn-secondary btn-status">Chờ xác nhận</button> --}}
                             {{{status}}}
                         </td>
-                        <td>
-                            <a href="/admin/confirm-cart/{{code_order}}" class="btn btn-success btn-confirm-cart"><i
-                                    class="fa fa-check" aria-hidden="true"></i></a>
+                        <td class="button">
+                            <button class="btn btn-success confirmOrder d-none"
+                                data-id="{{code_order}}">Confirm</button>
+                            <button class="btn btn-danger cancelOrder d-none" data-id="{{code_order}}">Cancel</button>
                         </td>
                     </tr>
                     {{/each}}
-                    {{#if error}}
-                    <div id="error" style="width: 400px; margin:auto;" class="mb-5 mt-4 alert alert-danger text-center">
-                        {{error}}
-                    </div>
-                    {{/if}}
-                    {{#if success}}
-                    <div id="success" style="width: 400px; margin:auto;"
-                        class="mb-5 mt-4 alert alert-success text-center">
-                        {{success}}</div>
-                    {{/if}}
                 </tbody>
             </table>
         </div>
@@ -117,50 +108,92 @@
 
     </div>
 </div>
-
-
-<!-- Modal Start-->
-{{!-- <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-    aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Bạn Có Muốn Xoá Sản
-                    Phẩm ?</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                Sản Phẩm <strong class="text_pro_name"> </strong> Sẽ Được Xoá Và
-                Không Thể Hoàn Tác !
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">
-                    Huỷ
-                </button>
-
-                <a href="" class="text-decoration-none btn btn-danger conf-delete">Xoá</a>
-
-            </div>
-        </div>
+<div class="notification">
+    {{#if error}}
+    <div id="error" class="mt-2 alert alert-danger text-center">
+        {{error}}
     </div>
-</div> --}}
-{{!-- Modal End --}}
+    {{/if}}
+    {{#if success}}
+    <div id="success" class="mt-2 alert alert-success text-center">
+        {{success}}
+    </div>
+    {{/if}}
+</div>
 <script>
     $(document).ready(function () {
         setTimeout(function () {
             $('.wrapper').fadeOut();
-        }, 500)
-        $('.btn-delete').click(function () {
-            var id = $(this).children('span').text().trim();
-            var btn_delete = $(this).val();
-            $('.conf-delete').attr('href', `/admin/delete-product/${id}`)
-            $(".text_pro_name").html(btn_delete);
+        }, 500);
+        setTimeout(function () {
+            $('.notification').fadeOut()
+        }, 1500)
+        var url_status = $('.bodyTable').children().children().siblings().siblings().siblings().siblings('#status').children()
+        $('.notConfirm').each(function () {
+            var url_button = $(this).parent('#status').siblings()
+            url_button.children('.confirmOrder').removeClass('d-none')
+        })
+        $('.confirmed').each(function () {
+            var url_button = $(this).parent('#status').siblings()
+            url_button.children('.cancelOrder').removeClass('d-none')
+        })
+
+        $('.confirmOrder').click(function () {
+            var id = $(this).data('id')
+            let url = $(this).parent().siblings().children('.btn-status')
+            url.removeClass('btn-danger').addClass('btn-success')
+            url.text('Đã Xác Nhận')
+            $(this).addClass('d-none')
+            $(this).siblings('.cancelOrder').removeClass('d-none')
+            $('.wrapper').show()
+            setTimeout(function () {
+                $('.wrapper').fadeOut();
+            }, 500);
+            $.ajax({
+                method: 'get',
+                url: `http://localhost:3000/admin/confirm-cart/${id}`,
+                data: {
+
+                },
+                success: (order) => {
+                }
+            })
         });
+        $('.cancelOrder').click(function () {
+            var id = $(this).data('id')
+            let url = $(this).parent().siblings().children('.btn-status')
+            url.removeClass('btn-success').addClass('btn-danger')
+            url.text('Chờ Xác Nhận')
+            $(this).addClass('d-none')
+            $(this).siblings('.confirmOrder').removeClass('d-none')
+            $('.wrapper').show()
+            setTimeout(function () {
+                $('.wrapper').fadeOut();
+            }, 500);
+            $.ajax({
+                method: 'get',
+                url: `http://localhost:3000/admin/cancel-order/${id}`,
+                data: {},
+                success: () => {
 
-
-
-
+                }
+            })
+        });
+        $('#search').on("keyup", function () {
+            var value = $(this).val();
+            $("table tr").each(function (index) {
+                if (index !== 0) {
+                    $row = $(this);
+                    var id = $row.find("td:first").text();
+                    if (id.indexOf(value) !== 0) {
+                        $row.hide();
+                    }
+                    else {
+                        $row.show();
+                    }
+                }
+            });
+        })
     })
+
 </script>

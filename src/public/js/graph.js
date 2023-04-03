@@ -36,6 +36,7 @@
 //     data_week.push(object)
 // }
 // console.log(data_week);
+// require('dotenv').config();
 document.addEventListener("DOMContentLoaded", () => {
     $.ajax({
         url: "http://localhost:3000/admin/data",

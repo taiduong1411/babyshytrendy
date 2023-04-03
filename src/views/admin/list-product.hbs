@@ -55,7 +55,11 @@
                 <input id="search" name="pro_name" type="text" class="form-control" placeholder="Search">
             </div>
         </form>
-        <div style="height:500px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow:auto;">
+        {{!-- <button class="ml-4 btn btn-primary">
+            <i class="fa fa-filter" aria-hidden="true"></i>
+            Filter
+        </button> --}}
+        <div style="height:500px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow:hidden;">
             <table class="table ml-3 mr-3">
                 <thead>
                     <tr>
@@ -92,7 +96,6 @@
                             </button>
                             <a href="/admin/edit-product/{{id}}" class="conf-edit btn btn-success"><i
                                     class="fa fa-edit"></i></a>
-
                         </td>
                     </tr>
                     {{/each}}
@@ -145,14 +148,49 @@
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">
                     Huỷ
                 </button>
-
                 <a href="" class="text-decoration-none btn btn-danger conf-delete">Xoá</a>
-
             </div>
         </div>
     </div>
 </div>
 {{!-- Modal End --}}
+
+{{#if modal_BE}}
+<div class="modal" id="myModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Cập nhật sản phẩm đã tồn tại</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form action="/admin/update-amount-product" method="post">
+                <div class="modal-body">
+                    {{#each modal_BE}}
+                    <div class="ml-3 mb-3">
+                        <strong>
+                            <span>[{{pid}}]</span>
+                        </strong>
+                        {{pro_name}}
+                        <span
+                            style="text-align:center;width: 40px; margin-right:20px;border-radius: 6px; padding: 2px 4px; background-color: rgb(205, 254, 205); position: absolute; right: 0;">{{amount}}</span>
+                        <input type="hidden" name="pid" id="pid" value="{{pid}}">
+                        <input type="hidden" name="amount" id="amount" value="{{amount}}">
+                    </div>
+                    {{/each}}
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Huỷ</button>
+                    <button type="submit" class="btn btn-primary">GO</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+{{/if}}
+
+
 <script>
     $(document).ready(function () {
         setTimeout(function () {
@@ -167,5 +205,7 @@
             $('.conf-delete').attr('href', `/admin/delete-product/${id}`)
             $(".text_pro_name").html(btn_delete);
         });
+
+        $("#myModal").modal('show');
     })
 </script>

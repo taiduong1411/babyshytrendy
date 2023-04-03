@@ -53,7 +53,7 @@
     <div class="mainDiv">
         <div class="cardStyle">
             <form class="form_addProduct" style="position: relative;" action="/admin/edit-product/{{data.id}}"
-                method="post">
+                data-id="{{data.id}}" method="post" enctype="multipart/form-data">
                 {{!-- <img src="/img/logo.jpeg" id="signupLogo" /> --}}
                 <h2 class="formTitle">
                     Chỉnh Sửa Sản Phẩm
@@ -94,21 +94,19 @@
                 <div style="width: 70%; margin: auto; height: 100px" class="images-Product">
                     {{#each data.image}}
                     <div class="imageProduct">
-                        <img src="{{this}}" alt="{{this}}" style="width: 80px; height: 80px;" id="img-data">
+                        <img src="{{this}}" alt="{{this}}" style="width: 80px; height: 80px;" id="img-data"
+                            data-src="{{this}}">
                         <span class="deleteImage d-none">x</span>
                     </div>
                     <input type="hidden" value="{{this}}" class="inputHidden">
                     {{!-- <button class="btn btn-danger mt-2 ml-3"><i class="fa fa-trash"></i></button> --}}
                     {{/each}}
-                    <span class="addImage">
-                        +
-                    </span>
                 </div>
-                <div class="inputDiv inputImage d-none">
-                    <label class="inputLabel" for="file">Import file Excel</label>
-                    <input style="height:50px; padding: 10px;" type="file" id="file" name="file" multiple>
+                <div class="inputDiv">
+                    <label class="inputLabel" for="image">Hình ảnh sản phẩm</label>
+                    <input style="height:50px; padding: 10px;" type="file" id="image" name="image"
+                        placeholder="Nhập hình ảnh sản phẩm" multiple>
                 </div>
-
                 <button type="submit" class="submit">Hoàn Thành </button>
                 <div style="position: absolute; width: 50px; height: 50px; border-width: 5px; right: 30%; bottom: 0"
                     class="loader"></div>
@@ -153,21 +151,18 @@
         let path_delete = $('.images-Product').children().children('#img-data').siblings('.deleteImage')
         path_delete.click(function () {
             $(this).siblings('#img-data').addClass('d-none')
-            /*
+            var id = $('.form_addProduct').data('id')
+            var src = $(this).siblings('#img-data').data('src')
             $.ajax({
-                url: 'http://localhost:3000/check-discount',
                 method: 'post',
+                url: `http://localhost:3000/admin/delete-image/${id}`,
                 data: {
-                    file
+                    src
                 },
-                success: {
+                success: (data) => {
 
                 }
             })
-            */
-        })
-        $('.addImage').click(function () {
-            $('.inputImage').removeClass('d-none')
         })
     })
 </script>

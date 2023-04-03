@@ -9,6 +9,7 @@ const UserAPI = {
                 .then(user => {
                     return {
                         id: (user._id).toString(),
+                        username: user.username,
                         email: user.email,
                         phone: user.phone,
                         address: user.address,

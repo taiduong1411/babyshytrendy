@@ -29,6 +29,7 @@
         "mongoose": "^6.5.3",
         "mongoose-slug-generator": "^1.0.4",
         "multer": "^1.4.5-lts.1",
+        "nodemailer": "^6.9.1",
         "path": "^0.12.7",
         "query-string": "^7.1.1",
         "session": "^0.1.0",

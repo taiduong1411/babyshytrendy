@@ -11,6 +11,13 @@ const DiscountModel = new Schema({
     },
     value: {
         type: Number
+    },
+    customer: {
+        type: String
+    },
+    email_status: {
+        type: Boolean,
+        default: false
     }
 }, {
     timestamps: true

@@ -62,14 +62,6 @@
                 <h2 class="formTitle">
                     Nhập Sản Phẩm
                 </h2>
-                {{#if error}}
-                <div id="error" style="width: 400px; margin:auto;" class="mt-5 alert alert-danger text-center">{{error}}
-                </div>
-                {{/if}}
-                {{#if success}}
-                <div id="success" style="width: 400px; margin:auto;" class="mt-5 alert alert-success text-center">
-                    {{success}}</div>
-                {{/if}}
                 <div class="inputDiv">
                     <label class="inputLabel" for="type">Loại Sản Phẩm</label>
                     <select id="selector" name="gid" class="form-control">
@@ -136,6 +128,20 @@
     </div>
 
 </div>
+<div class="notification">
+    {{#if error}}
+    <div id="error" class="mt-2 alert alert-danger text-center">
+        {{error}}
+    </div>
+    {{/if}}
+    {{#if success}}
+    <div id="success" class="mt-2 alert alert-success text-center">
+        {{success}}
+    </div>
+    {{/if}}
+</div>
+
+
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <script>
     $(document).ready(function () {
@@ -170,8 +176,7 @@
             }
         });
         setTimeout(function () {
-            $('#error').fadeOut('slow')
-            $('#success').fadeOut('slow')
-        }, 2000)
+            $('.notification').fadeOut()
+        }, 1500)
     })
 </script>
