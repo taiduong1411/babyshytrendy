@@ -75,7 +75,7 @@
                         <td style="text-align: center;">
                             {{c_name}}
                         </td>
-                        <td style="text-align: center;">
+                        <td>
                             {{#each this.pOrder}}
                             <div>[{{pid}}] {{pro_name}}</div>
                             <div>Số lượng: <strong>{{amount}}</strong></div>
@@ -88,9 +88,11 @@
                             {{{status}}}
                         </td>
                         <td class="button">
-                            <button class="btn btn-success confirmOrder d-none"
-                                data-id="{{code_order}}">Confirm</button>
-                            <button class="btn btn-danger cancelOrder d-none" data-id="{{code_order}}">Cancel</button>
+                            <button class="btn btn-success confirmOrder d-none" data-id="{{code_order}}">
+                                <i class="fa fa-check" aria-hidden="true"></i>
+                            </button>
+                            <button class="btn btn-danger cancelOrder d-none" data-id="{{code_order}}">
+                                <i class="fa fa-repeat" aria-hidden="true"></i></button>
                         </td>
                     </tr>
                     {{/each}}
@@ -141,7 +143,7 @@
         $('.confirmOrder').click(function () {
             var id = $(this).data('id')
             let url = $(this).parent().siblings().children('.btn-status')
-            url.removeClass('btn-danger').addClass('btn-success')
+            url.css('opacity', '0.2')
             url.text('Đã Xác Nhận')
             $(this).addClass('d-none')
             $(this).siblings('.cancelOrder').removeClass('d-none')
@@ -162,7 +164,7 @@
         $('.cancelOrder').click(function () {
             var id = $(this).data('id')
             let url = $(this).parent().siblings().children('.btn-status')
-            url.removeClass('btn-success').addClass('btn-danger')
+            url.css('opacity', '0.2')
             url.text('Chờ Xác Nhận')
             $(this).addClass('d-none')
             $(this).siblings('.confirmOrder').removeClass('d-none')
