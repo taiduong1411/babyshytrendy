@@ -33,7 +33,7 @@ const OrderAPI = {
                         c_name: orders.c_name,
                         total_price: (orders.total_price).toLocaleString('it-IT', { style: "currency", currency: "VND" }),
                         code_discount: orders.code_discount,
-                        status: (orders.status) ? `<span class="btn btn-secondary btn-status confirmed" style="width: 130px; opacity: 0.2;">Đã Xác Nhận</span>` : `<span class="btn btn-secondary btn-status notConfirm" style="width: fit-content;">Chờ Xác Nhận</span>`
+                        status: (orders.status) ? `<span class="btn btn-secondary btn-status confirmed" style="width: 140px; opacity: 0.2;">Đã Xác Nhận</span>` : `<span class="btn btn-secondary btn-status notConfirm" style="width: 140px;">Chờ Xác Nhận</span>`
                             // status: orders.status
                     }
                 })

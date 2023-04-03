@@ -504,6 +504,7 @@ const AdminController = {
                 totalPrice = totalPrice + order_byUser[i].total_price
             }
         }
+        console.log(totalPrice)
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         function generateString(length) {
