@@ -31,7 +31,7 @@ const AdminAPI = require('./API/AdminAPI');
 const UserAPI = require('./API/UserAPI');
 const ProductAPI = require('./API/ProductAPI');
 const OrderAPI = require('./API/OrderAPI');
-const port = process.env.PORT;
+const port = process.env.PORT || 3000;
 database.connect();
 //  config
 app.set('view engine', 'hbs');
@@ -43,7 +43,6 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 app.use(compression())
-process.env.UV_THREADPOOL_SIZE = os.cpus().length
 app.use(express.json());
 app.use(express.urlencoded({
     extended: true
