@@ -384,29 +384,30 @@ const AdminController = {
     getDataWeek: async(req, res, next) => {
         let orders = await Order.find().lean()
         let toDay = new Date().toLocaleDateString('en-GB')
-            // let orderToday = orders.filter(order => (order.updatedAt).toLocaleDateString('en-GB') == '22/03/2023')
-            // let count_orderToday = orderToday.length
-            // console.log(orderToday)
-
+            // console.log(toDay)
 
         function getDaysInCurrentMonth() {
             const date = new Date();
             return new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
         }
         var result = getDaysInCurrentMonth();
-        var dayCurr = 20
+        var dayCurr = new Date().getDate()
+
         var monthCurr = new Date().getMonth() + 1
         var yearCurr = new Date().getFullYear()
         var DayOfWeek = []
         for (var j = dayCurr; j < dayCurr + 7; j++) {
             if (j < result + 1) {
-                DayOfWeek.push(j + '/0' + monthCurr + '/' + yearCurr);
+                if (j < 10) {
+                    DayOfWeek.push('0' + j + '/0' + monthCurr + '/' + yearCurr);
+                } else {
+                    DayOfWeek.push(j + '/0' + monthCurr + '/' + yearCurr);
+                }
             } else {
                 DayOfWeek.push((j - result) + '/0' + (monthCurr + 1) + '/' + yearCurr)
             }
         }
         var data_week = []
-        var test = []
         for (var k = 0; k < DayOfWeek.length; k++) {
             let orderToday = orders.filter(order => (order.updatedAt).toLocaleDateString('en-GB') == DayOfWeek[k].toString() && order.status == true)
             let count_orderToday = orderToday.length
@@ -416,6 +417,7 @@ const AdminController = {
             }
             data_week.push(object)
         }
+        // console.log(data_week)
         return res.send(data_week)
     },
     getDataAgency: async(req, res, next) => {
@@ -464,9 +466,7 @@ const AdminController = {
     getlistCart: async(req, res, next) => {
         let error = req.flash('error' || '');
         let success = req.flash('success' || '');
-        var carts = await OrderAPI.getAll({ sort: 1 })
-
-
+        var carts = await OrderAPI.getAll({ sort: -1 })
         return res.render('admin/list-cart', {
             username: req.session.username,
             cartList: carts,
@@ -504,7 +504,6 @@ const AdminController = {
                 totalPrice = totalPrice + order_byUser[i].total_price
             }
         }
-        console.log(totalPrice)
         const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
 
         function generateString(length) {

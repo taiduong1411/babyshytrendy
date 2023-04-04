@@ -129,16 +129,6 @@ app.get('/home', async(req, res, next) => {
                 // amountCart: a
             })
         })
-        // var user = UserAPI.getOne({ username: req.session.username }).then(user => {
-        //     if (!user) {
-        //         var amountCart = 0
-        //     } else {
-        //         var a = user.cart.length.toString()
-        //         return res.render('home', {
-        //             amountCart: a
-        //         })
-        //     }
-        // })
 });
 app.post('/check-discount', async(req, res, next) => {
     const code = req.body.code;
@@ -164,6 +154,7 @@ app.use('/account', UsersRouter)
 app.get('/', (req, res) => {
     return res.redirect('/home');
 })
+
 
 // localhost
 app.listen(port, () => {

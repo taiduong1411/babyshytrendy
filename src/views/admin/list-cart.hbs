@@ -55,15 +55,17 @@
                 <input id="search" name="pro_name" type="text" class="form-control" placeholder="Search">
             </div>
         </form>
-        <div style="height:900px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow:hidden;">
+        <div style="height:600px;width:100%;border:0.5px solid #4e4e4e;font:16px Arial, Serif;overflow-x:hidden;">
             <table class="table ml-3 mr-3">
                 <thead>
                     <tr>
                         <th scope="col" style="text-align: center;">Mã đơn hàng</th>
-                        <th scope="col" style="text-align: center;">Thông tin khách hàng</th>
-                        <th scope="col" style="text-align: center;">Thông tin đơn hàng</th>
+                        <th scope="col" style="text-align: center;">Khách hàng</th>
+                        <th scope="col" style="text-align: center;">Thông tin đơn</th>
+                        <th scope="col" style="text-align: center;">Ngày Tạo</th>
+                        {{!-- <th scope="col" style="text-align: center;">Ngày Xác Nhận</th> --}}
                         <th scope="col" style="text-align: center;">Tổng giá</th>
-                        <th scope="col" style="text-align: center;">Trạng thái đơn hàng</th>
+                        <th scope="col" style="text-align: center;">Trạng thái</th>
                     </tr>
                 </thead>
                 <tbody class="bodyTable">
@@ -81,12 +83,18 @@
                             <div>Số lượng: <strong>{{amount}}</strong></div>
                             {{/each}}
                         </td>
-
-                        <td style="text-align: center;">{{total_price}}</td>
+                        <td style="text-align: center;">
+                            {{createdAt}}
+                        </td>
+                        {{!-- <td class="updatedAt">
+                            {{updatedAt}}
+                        </td> --}}
+                        <td style="text-align: center;"><strong>{{total_price}}</strong></td>
                         <td id="status" style="text-align: center;">
                             {{!-- <button class="btn btn-secondary btn-status">Chờ xác nhận</button> --}}
                             {{{status}}}
                         </td>
+
                         <td class="button">
                             <button class="btn btn-success confirmOrder d-none" data-id="{{code_order}}">
                                 <i class="fa fa-check" aria-hidden="true"></i>
@@ -164,7 +172,7 @@
         $('.cancelOrder').click(function () {
             var id = $(this).data('id')
             let url = $(this).parent().siblings().children('.btn-status')
-            url.css('opacity', '0.2')
+            url.css('opacity', '1')
             url.text('Chờ Xác Nhận')
             $(this).addClass('d-none')
             $(this).siblings('.confirmOrder').removeClass('d-none')
