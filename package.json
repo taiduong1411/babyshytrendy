@@ -6,7 +6,8 @@
     "scripts": {
         "server": "nodemon src/index.js",
         "start": "node src/index.js",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "echo \"Error: no test specified\" && exit 1",
+        "vercel-install": "./vercel-submodule-workaround.sh && yarn --ignore-scripts --production=false"
     },
     "author": "",
     "license": "ISC",
