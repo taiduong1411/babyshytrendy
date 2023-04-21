@@ -36,7 +36,12 @@
                 </li>
                 <li>
                     <a class="s-sidebar__nav-link" href="/admin/list-cart">
-                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                        <i class="fa fa-list"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-discount">
+                        <i class="fa fa-plus"></i><em>Tạo mã giảm giá</em>
                     </a>
                 </li>
                 <li>
@@ -155,7 +160,7 @@
             var src = $(this).siblings('#img-data').data('src')
             $.ajax({
                 method: 'post',
-                url: `http://localhost:8080/admin/delete-image/${id}`,
+                url: `/admin/delete-image/${id}`,
                 data: {
                     src
                 },

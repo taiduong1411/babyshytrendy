@@ -34,7 +34,12 @@
                 </li>
                 <li>
                     <a class="s-sidebar__nav-link" href="/admin/list-cart">
-                        <i class="fa fa-plus"></i><em>Danh sách đơn hàng</em>
+                        <i class="fa fa-list"></i><em>Danh sách đơn hàng</em>
+                    </a>
+                </li>
+                <li>
+                    <a class="s-sidebar__nav-link" href="/admin/add-discount">
+                        <i class="fa fa-plus"></i><em>Tạo mã giảm giá</em>
                     </a>
                 </li>
                 <li>
@@ -161,7 +166,7 @@
             }, 500);
             $.ajax({
                 method: 'get',
-                url: `http://localhost:8080/admin/confirm-cart/${id}`,
+                url: `/admin/confirm-cart/${id}`,
                 data: {
 
                 },
@@ -182,7 +187,7 @@
             }, 500);
             $.ajax({
                 method: 'get',
-                url: `http://localhost:8080/admin/cancel-order/${id}`,
+                url: `/admin/cancel-order/${id}`,
                 data: {},
                 success: () => {
 
