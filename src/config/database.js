@@ -4,7 +4,7 @@ const uri_compass = "mongodb://localhost:27017/Babyshytrendy"
 async function connect() {
     try {
         await mongoose.set('strictQuery', true);
-        await mongoose.connect(uri_compass, {
+        await mongoose.connect(uri_atlas, {
             useNewUrlParser: true
         })
         console.log('connect db success')
