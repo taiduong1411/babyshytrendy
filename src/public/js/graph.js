@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     $.ajax({
-        url: "http://localhost:3000/admin/data",
+        url: "http://localhost:8080/admin/data",
         method: "get",
         data: {},
         success: (data_week) => {

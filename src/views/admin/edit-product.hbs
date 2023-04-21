@@ -155,7 +155,7 @@
             var src = $(this).siblings('#img-data').data('src')
             $.ajax({
                 method: 'post',
-                url: `http://localhost:3000/admin/delete-image/${id}`,
+                url: `http://localhost:8080/admin/delete-image/${id}`,
                 data: {
                     src
                 },
