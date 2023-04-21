@@ -154,13 +154,13 @@ const AdminController = {
         for (var i = 0; i < pid.length; i++) {
             for (var j = 0; j < amount.length; j++) {
                 var product = await Products.findOne({ pid: pid[i] })
-                product.amount = parseInt((product.amount)) + parseInt(amount[j])
+                var product_amount = product.amount
+                product_amount = parseInt((product_amount)) + parseInt(amount[j])
             }
             product.save()
         }
         req.flash('success', 'Cập nhật thành công!')
         return res.redirect('/admin/list-product')
-
     },
     getAdminSearch: async(req, res, next) => {
         let products = await AdminAPI.getAll({ sort: 1 })
