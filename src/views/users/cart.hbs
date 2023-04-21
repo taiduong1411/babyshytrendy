@@ -35,7 +35,7 @@
         </tfoot>
     </table>
 
-    <div style="position: absolute; right: 0; margin-top: 350px; margin-right: 50px">
+    <div style="position: absolute; right: 0; margin-top: 390px; margin-right: 50px">
         <form action="/users/cart" method="POST">
             {{#if discount}}
             <div class="mt-3 discount" style="margin-bottom: 50px;">
@@ -56,7 +56,7 @@
             {{#if btn_confirm_buy}}
             <div class="mt-5 confirm">
                 <button type="submit" class="btn btn-confirm"
-                    style="background-color: var(--color-main); width: 400px;">Xác
+                    style="background-color: var(--color-main); width: 400px; margin-bottom:100px;">Xác
                     nhận
                     mua hàng</button>
             </div>
@@ -75,7 +75,7 @@
 
 
 </div>
-<script>
+<script type="text/javascript">
     $(document).ready(function () {
         var calculated_total_sum = 0;
         $(".price").each(function () {
@@ -100,7 +100,7 @@
             $(".total_price_d_none").val(total_price);
         } else {
             $.ajax({
-                url: 'http://localhost:8080/check-discount',
+                url: "/check-discount",
                 method: 'POST',
                 data: {
                     code
